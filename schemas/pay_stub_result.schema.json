@@ -1,0 +1,366 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:ocrolus-takehome:schema:pay-stub-result:1.0",
+  "title": "Pay Stub Delivery Result",
+  "description": "A delivery-gated, versioned result for one logical pay stub. Business data is present only for completed results.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "document_id",
+    "result_revision",
+    "document_type",
+    "processing_status",
+    "confidence_score",
+    "extraction_method",
+    "flagged_for_review",
+    "provenance"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "document_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "result_revision": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "document_type": {
+      "const": "pay_stub"
+    },
+    "processing_status": {
+      "enum": [
+        "NEEDS_REVIEW",
+        "COMPLETED_AUTO",
+        "COMPLETED_HUMAN_VERIFIED",
+        "UNPROCESSABLE"
+      ]
+    },
+    "confidence_score": {
+      "$ref": "#/$defs/nullableConfidence"
+    },
+    "extraction_method": {
+      "type": ["string", "null"]
+    },
+    "flagged_for_review": {
+      "type": "boolean"
+    },
+    "currency": {
+      "anyOf": [
+        {"type": "string", "pattern": "^[A-Z]{3}$"},
+        {"type": "null"}
+      ]
+    },
+    "employee": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "id"],
+      "properties": {
+        "name": {"$ref": "#/$defs/nullableString"},
+        "id": {"$ref": "#/$defs/nullableString"}
+      }
+    },
+    "employer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name"],
+      "properties": {
+        "name": {"$ref": "#/$defs/nullableString"}
+      }
+    },
+    "pay_period": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["start", "end", "pay_date", "frequency"],
+      "properties": {
+        "start": {"$ref": "#/$defs/nullableDate"},
+        "end": {"$ref": "#/$defs/nullableDate"},
+        "pay_date": {"$ref": "#/$defs/nullableDate"},
+        "frequency": {
+          "anyOf": [
+            {
+              "enum": [
+                "weekly",
+                "bi_weekly",
+                "semi_monthly",
+                "monthly",
+                "other"
+              ]
+            },
+            {"type": "null"}
+          ]
+        }
+      }
+    },
+    "compensation_rate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["basis", "amount", "unit"],
+      "properties": {
+        "basis": {
+          "anyOf": [
+            {"enum": ["salary", "hourly", "other"]},
+            {"type": "null"}
+          ]
+        },
+        "amount": {"$ref": "#/$defs/nullableMoney"},
+        "unit": {
+          "anyOf": [
+            {"enum": ["hour", "week", "month", "year", "pay_period", "other"]},
+            {"type": "null"}
+          ]
+        }
+      }
+    },
+    "earnings": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["gross", "items"],
+      "properties": {
+        "gross": {"$ref": "#/$defs/moneyPair"},
+        "items": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/earningItem"}
+        }
+      }
+    },
+    "deductions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["total", "items"],
+      "properties": {
+        "total": {"$ref": "#/$defs/moneyPair"},
+        "items": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/deductionItem"}
+        }
+      }
+    },
+    "net_pay": {
+      "$ref": "#/$defs/moneyPair"
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["pipeline_version", "status_updated_at"],
+      "properties": {
+        "pipeline_version": {"type": "string", "minLength": 1},
+        "status_updated_at": {
+          "anyOf": [
+            {"type": "string", "format": "date-time"},
+            {"type": "null"}
+          ]
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "processing_status": {
+            "enum": ["COMPLETED_AUTO", "COMPLETED_HUMAN_VERIFIED"]
+          }
+        },
+        "required": ["processing_status"]
+      },
+      "then": {
+        "required": [
+          "currency",
+          "employee",
+          "employer",
+          "pay_period",
+          "compensation_rate",
+          "earnings",
+          "deductions",
+          "net_pay"
+        ]
+      },
+      "else": {
+        "not": {
+          "anyOf": [
+            {"required": ["currency"]},
+            {"required": ["employee"]},
+            {"required": ["employer"]},
+            {"required": ["pay_period"]},
+            {"required": ["compensation_rate"]},
+            {"required": ["earnings"]},
+            {"required": ["deductions"]},
+            {"required": ["net_pay"]}
+          ]
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {"processing_status": {"const": "COMPLETED_AUTO"}},
+        "required": ["processing_status"]
+      },
+      "then": {
+        "properties": {
+          "confidence_score": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "flagged_for_review": {"const": false}
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "processing_status": {"const": "COMPLETED_HUMAN_VERIFIED"}
+        },
+        "required": ["processing_status"]
+      },
+      "then": {
+        "properties": {
+          "confidence_score": {"type": "null"},
+          "flagged_for_review": {"const": false}
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {"processing_status": {"const": "NEEDS_REVIEW"}},
+        "required": ["processing_status"]
+      },
+      "then": {
+        "properties": {
+          "confidence_score": {"type": "null"},
+          "flagged_for_review": {"const": true}
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {"processing_status": {"const": "UNPROCESSABLE"}},
+        "required": ["processing_status"]
+      },
+      "then": {
+        "properties": {
+          "confidence_score": {"type": "null"},
+          "flagged_for_review": {"const": false}
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "nullableString": {
+      "type": ["string", "null"]
+    },
+    "nullableDate": {
+      "anyOf": [
+        {"type": "string", "format": "date"},
+        {"type": "null"}
+      ]
+    },
+    "money": {
+      "type": "string",
+      "pattern": "^-?[0-9]+\\.[0-9]{2}$"
+    },
+    "nullableMoney": {
+      "anyOf": [
+        {"$ref": "#/$defs/money"},
+        {"type": "null"}
+      ]
+    },
+    "nullableDecimal": {
+      "anyOf": [
+        {"type": "string", "pattern": "^-?[0-9]+(?:\\.[0-9]+)?$"},
+        {"type": "null"}
+      ]
+    },
+    "nullableConfidence": {
+      "anyOf": [
+        {"type": "number", "minimum": 0, "maximum": 1},
+        {"type": "null"}
+      ]
+    },
+    "moneyPair": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["current", "year_to_date"],
+      "properties": {
+        "current": {"$ref": "#/$defs/nullableMoney"},
+        "year_to_date": {"$ref": "#/$defs/nullableMoney"}
+      }
+    },
+    "earningItem": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "label",
+        "type",
+        "current_amount",
+        "year_to_date_amount",
+        "rate",
+        "hours"
+      ],
+      "properties": {
+        "label": {"$ref": "#/$defs/nullableString"},
+        "type": {
+          "enum": [
+            "regular",
+            "overtime",
+            "bonus",
+            "commission",
+            "tips",
+            "shift_differential",
+            "holiday",
+            "vacation",
+            "sick",
+            "reimbursement",
+            "other"
+          ]
+        },
+        "current_amount": {"$ref": "#/$defs/nullableMoney"},
+        "year_to_date_amount": {"$ref": "#/$defs/nullableMoney"},
+        "rate": {"$ref": "#/$defs/nullableMoney"},
+        "hours": {"$ref": "#/$defs/nullableDecimal"}
+      }
+    },
+    "deductionItem": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "label",
+        "type",
+        "tax_treatment",
+        "current_amount",
+        "year_to_date_amount"
+      ],
+      "properties": {
+        "label": {"$ref": "#/$defs/nullableString"},
+        "type": {
+          "enum": [
+            "federal_tax",
+            "state_tax",
+            "local_tax",
+            "social_security",
+            "medicare",
+            "health_insurance",
+            "dental_insurance",
+            "vision_insurance",
+            "retirement",
+            "garnishment",
+            "union_dues",
+            "other"
+          ]
+        },
+        "tax_treatment": {
+          "anyOf": [
+            {"enum": ["pre_tax", "post_tax", "unknown"]},
+            {"type": "null"}
+          ]
+        },
+        "current_amount": {"$ref": "#/$defs/nullableMoney"},
+        "year_to_date_amount": {"$ref": "#/$defs/nullableMoney"}
+      }
+    }
+  }
+}

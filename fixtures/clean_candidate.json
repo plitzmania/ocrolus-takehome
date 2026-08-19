@@ -1,0 +1,64 @@
+{
+  "document_id": "synthetic-clean-001",
+  "source": "simulated_upstream_output",
+  "document_readability": 0.99,
+  "currency": {"value": "USD", "confidence": 0.99},
+  "employee": {
+    "name": {"value": "Sample Employee", "confidence": 0.99},
+    "id": {"value": "EMP-4821", "confidence": 0.99}
+  },
+  "employer": {
+    "name": {"value": "Example Employer LLC", "confidence": 0.99}
+  },
+  "pay_period": {
+    "start": {"value": "2026-07-01", "confidence": 0.99},
+    "end": {"value": "2026-07-15", "confidence": 0.99},
+    "pay_date": {"value": "2026-07-18", "confidence": 0.99},
+    "frequency": {"value": "bi_weekly", "confidence": 0.99}
+  },
+  "compensation_rate": {
+    "basis": {"value": "hourly", "confidence": 0.98},
+    "amount": {"value": "25.00", "confidence": 0.98},
+    "unit": {"value": "hour", "confidence": 0.98}
+  },
+  "earnings": [
+    {
+      "label": {"value": "Regular Pay", "confidence": 0.99},
+      "type": {"value": "regular", "confidence": 0.99},
+      "current_amount": {"value": "2000.00", "confidence": 0.99},
+      "year_to_date_amount": {"value": "18000.00", "confidence": 0.99},
+      "rate": {"value": "25.00", "confidence": 0.98},
+      "hours": {"value": "80.00", "confidence": 0.98}
+    },
+    {
+      "label": {"value": "Bonus", "confidence": 0.99},
+      "type": {"value": "bonus", "confidence": 0.99},
+      "current_amount": {"value": "500.00", "confidence": 0.99},
+      "year_to_date_amount": {"value": "1000.00", "confidence": 0.99}
+    }
+  ],
+  "deductions": [
+    {
+      "label": {"value": "Federal Tax", "confidence": 0.99},
+      "type": {"value": "federal_tax", "confidence": 0.99},
+      "tax_treatment": {"value": "post_tax", "confidence": 0.96},
+      "current_amount": {"value": "300.00", "confidence": 0.99},
+      "year_to_date_amount": {"value": "2700.00", "confidence": 0.99}
+    },
+    {
+      "label": {"value": "Health Plan", "confidence": 0.99},
+      "type": {"value": "health_insurance", "confidence": 0.99},
+      "tax_treatment": {"value": "pre_tax", "confidence": 0.96},
+      "current_amount": {"value": "200.00", "confidence": 0.99},
+      "year_to_date_amount": {"value": "1800.00", "confidence": 0.99}
+    }
+  ],
+  "totals": {
+    "gross_pay": {"value": "2500.00", "confidence": 0.99},
+    "gross_pay_ytd": {"value": "19000.00", "confidence": 0.99},
+    "total_deductions": {"value": "500.00", "confidence": 0.99},
+    "total_deductions_ytd": {"value": "4500.00", "confidence": 0.99},
+    "net_pay": {"value": "2000.00", "confidence": 0.99},
+    "net_pay_ytd": {"value": "14500.00", "confidence": 0.99}
+  }
+}

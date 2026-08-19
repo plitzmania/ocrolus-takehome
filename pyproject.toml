@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ocrolus-takehome"
+version = "0.1.0"
+description = "Pay-stub validation, confidence assessment, and human-review routing prototype"
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = []
+
+[project.optional-dependencies]
+test = ["jsonschema>=4.23", "pytest>=8", "ruff>=0.12"]
+
+[project.scripts]
+ocrolus-takehome-demo = "ocrolus_takehome.demo:main"
+ocrolus-review-task = "ocrolus_takehome.review:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+addopts = "-q"
+pythonpath = ["src"]
+testpaths = ["tests"]
+
+[tool.ruff]
+target-version = "py39"
+
+[tool.ruff.lint]
+select = ["B", "E", "F", "I"]

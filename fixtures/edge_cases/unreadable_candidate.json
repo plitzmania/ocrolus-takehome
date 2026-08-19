@@ -1,0 +1,29 @@
+{
+  "document_id": "synthetic-unreadable-001",
+  "source": "simulated_upstream_output",
+  "document_readability": 0.20,
+  "currency": {"value": null, "confidence": 0.0},
+  "employee": {
+    "name": {"value": null, "confidence": 0.0},
+    "id": {"value": null, "confidence": 0.0}
+  },
+  "employer": {
+    "name": {"value": null, "confidence": 0.0}
+  },
+  "pay_period": {
+    "start": {"value": null, "confidence": 0.0},
+    "end": {"value": null, "confidence": 0.0},
+    "pay_date": {"value": null, "confidence": 0.0},
+    "frequency": {"value": null, "confidence": 0.0}
+  },
+  "earnings": [],
+  "deductions": [],
+  "totals": {
+    "gross_pay": {"value": null, "confidence": 0.0},
+    "gross_pay_ytd": {"value": null, "confidence": 0.0},
+    "total_deductions": {"value": null, "confidence": 0.0},
+    "total_deductions_ytd": {"value": null, "confidence": 0.0},
+    "net_pay": {"value": null, "confidence": 0.0},
+    "net_pay_ytd": {"value": null, "confidence": 0.0}
+  }
+}

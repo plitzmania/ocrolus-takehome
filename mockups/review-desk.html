@@ -1,0 +1,760 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ocrolus Review Desk Mock</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --rd-page: light-dark(#f4f7fb, #101820);
+      --rd-shell: light-dark(#ffffff, #17212b);
+      --rd-panel: light-dark(#ffffff, #1d2935);
+      --rd-subtle: light-dark(#f7f9fc, #22303d);
+      --rd-document: light-dark(#ffffff, #f8fafc);
+      --rd-text: light-dark(#142638, #edf4fa);
+      --rd-document-text: #172b3e;
+      --rd-muted: light-dark(#627284, #aebdca);
+      --rd-border: light-dark(#d8e1e9, #394a59);
+      --rd-brand: light-dark(#0876a6, #59c3ef);
+      --rd-brand-strong: light-dark(#075f87, #8dd8f5);
+      --rd-brand-soft: light-dark(#e8f6fb, #12394a);
+      --rd-warning: light-dark(#9a5c00, #ffc467);
+      --rd-warning-soft: light-dark(#fff5df, #412d14);
+      --rd-danger: light-dark(#b42318, #ff8f88);
+      --rd-success: light-dark(#157347, #70d7a5);
+      --rd-shadow: light-dark(rgba(21, 42, 60, 0.12), rgba(0, 0, 0, 0.3));
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--rd-page);
+      color: var(--rd-text);
+    }
+
+    button, input, select { font: inherit; }
+    button { cursor: pointer; }
+
+    .rd-app {
+      min-width: 320px;
+      background: var(--rd-page);
+    }
+
+    .rd-topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 14px 22px;
+      background: var(--rd-shell);
+      border-bottom: 1px solid var(--rd-border);
+    }
+
+    .rd-brand-group,
+    .rd-top-actions,
+    .rd-doc-meta,
+    .rd-viewer-tools,
+    .rd-progress-row,
+    .rd-action-row {
+      display: flex;
+      align-items: center;
+    }
+
+    .rd-brand-group { gap: 12px; }
+    .rd-mark {
+      display: grid;
+      place-items: center;
+      width: 34px;
+      height: 34px;
+      border-radius: 9px;
+      background: var(--rd-brand);
+      color: light-dark(#ffffff, #062838);
+      font-weight: 700;
+      letter-spacing: -0.04em;
+    }
+
+    .rd-product-name { font-weight: 700; }
+    .rd-product-subtitle,
+    .rd-muted { color: var(--rd-muted); }
+    .rd-product-subtitle { font-size: 12px; margin-top: 1px; }
+    .rd-top-actions { gap: 10px; flex-wrap: wrap; justify-content: flex-end; }
+
+    .rd-status,
+    .rd-review-type,
+    .rd-reason {
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 650;
+    }
+
+    .rd-status {
+      padding: 6px 10px;
+      color: var(--rd-warning);
+      background: var(--rd-warning-soft);
+      border: 1px solid color-mix(in srgb, var(--rd-warning) 35%, transparent);
+    }
+
+    .rd-reviewer {
+      padding-left: 10px;
+      border-left: 1px solid var(--rd-border);
+      font-size: 13px;
+    }
+
+    .rd-contextbar {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 12px 22px;
+      background: var(--rd-shell);
+      border-bottom: 1px solid var(--rd-border);
+    }
+
+    .rd-doc-meta { gap: 18px; flex-wrap: wrap; }
+    .rd-meta-block { min-width: 112px; }
+    .rd-meta-label {
+      color: var(--rd-muted);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .rd-meta-value { margin-top: 2px; font-size: 13px; font-weight: 650; }
+
+    .rd-review-type {
+      align-self: center;
+      padding: 5px 9px;
+      color: var(--rd-brand-strong);
+      background: var(--rd-brand-soft);
+    }
+
+    .rd-workspace {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(340px, 420px);
+      gap: 16px;
+      padding: 16px;
+    }
+
+    .rd-viewer,
+    .rd-review-panel {
+      background: var(--rd-panel);
+      border: 1px solid var(--rd-border);
+      border-radius: 12px;
+      box-shadow: 0 8px 30px var(--rd-shadow);
+      overflow: hidden;
+    }
+
+    .rd-viewer-header,
+    .rd-review-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--rd-border);
+      background: var(--rd-shell);
+    }
+
+    .rd-viewer-title,
+    .rd-review-title { font-weight: 700; }
+    .rd-viewer-tools { gap: 6px; }
+
+    .rd-icon-button,
+    .rd-secondary-button,
+    .rd-primary-button,
+    .rd-choice-button {
+      border: 1px solid var(--rd-border);
+      background: var(--rd-shell);
+      color: var(--rd-text);
+      border-radius: 8px;
+    }
+
+    .rd-icon-button {
+      min-width: 34px;
+      min-height: 32px;
+      padding: 5px 9px;
+    }
+    .rd-icon-button:hover,
+    .rd-secondary-button:hover,
+    .rd-choice-button:hover { border-color: var(--rd-brand); }
+
+    .rd-viewer-stage {
+      padding: 22px;
+      background:
+        linear-gradient(45deg, color-mix(in srgb, var(--rd-border) 24%, transparent) 25%, transparent 25%),
+        linear-gradient(-45deg, color-mix(in srgb, var(--rd-border) 24%, transparent) 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, color-mix(in srgb, var(--rd-border) 24%, transparent) 75%),
+        linear-gradient(-45deg, transparent 75%, color-mix(in srgb, var(--rd-border) 24%, transparent) 75%);
+      background-size: 20px 20px;
+      background-position: 0 0, 0 10px, 10px -10px, -10px 0;
+    }
+
+    .rd-page-wrap {
+      position: relative;
+      width: min(100%, 760px);
+      margin: 0 auto;
+      transition: transform 160ms ease;
+      transform-origin: top center;
+    }
+
+    .rd-paper {
+      position: relative;
+      aspect-ratio: 8.5 / 11;
+      padding: 7% 7% 6%;
+      background: var(--rd-document);
+      color: var(--rd-document-text);
+      border: 1px solid #d7dee5;
+      box-shadow: 0 12px 34px rgba(17, 36, 52, 0.18);
+      overflow: hidden;
+    }
+
+    .rd-paper-brand {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      padding-bottom: 3%;
+      border-bottom: 3px solid #1781ad;
+    }
+    .rd-paper-company { font-size: clamp(15px, 2vw, 25px); font-weight: 750; color: #125b80; }
+    .rd-paper-paystub { text-align: right; font-size: clamp(11px, 1.25vw, 15px); }
+    .rd-paper-paystub strong { display: block; font-size: 1.25em; }
+
+    .rd-paper-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3%;
+      margin: 3% 0;
+      font-size: clamp(9px, 1.15vw, 14px);
+    }
+    .rd-paper-box {
+      border: 1px solid #b7c4cf;
+      padding: 3%;
+      min-height: 70px;
+    }
+    .rd-paper-box strong { display: block; color: #125b80; margin-bottom: 3px; }
+
+    .rd-pay-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 3%;
+      font-size: clamp(8px, 1.05vw, 13px);
+    }
+    .rd-pay-table th {
+      padding: 1.5% 1.2%;
+      color: #ffffff;
+      background: #1b6387;
+      text-align: right;
+      font-weight: 650;
+    }
+    .rd-pay-table th:first-child,
+    .rd-pay-table td:first-child { text-align: left; }
+    .rd-pay-table td {
+      padding: 1.55% 1.2%;
+      border-bottom: 1px solid #d9e0e6;
+      text-align: right;
+    }
+    .rd-pay-table tr:nth-child(even) td { background: #f3f7fa; }
+    .rd-pay-table .rd-total td { font-weight: 750; border-top: 2px solid #8096a6; }
+
+    .rd-highlight {
+      position: absolute;
+      border: 3px solid #ef9b22;
+      background: rgba(255, 190, 73, 0.18);
+      border-radius: 4px;
+      box-shadow: 0 0 0 4px rgba(255, 190, 73, 0.18);
+      transition: inset 180ms ease, width 180ms ease, height 180ms ease;
+      pointer-events: none;
+    }
+
+    .rd-highlight::after {
+      content: "Review field";
+      position: absolute;
+      left: -3px;
+      bottom: calc(100% + 6px);
+      padding: 4px 7px;
+      border-radius: 5px;
+      color: #402300;
+      background: #ffbe49;
+      font-size: 11px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .rd-review-panel { display: flex; flex-direction: column; }
+    .rd-progress-row { gap: 8px; }
+    .rd-progress-track {
+      width: 82px;
+      height: 7px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: var(--rd-border);
+    }
+    .rd-progress-fill { width: 50%; height: 100%; background: var(--rd-brand); transition: width 180ms ease; }
+
+    .rd-issue-list {
+      display: grid;
+      gap: 8px;
+      padding: 12px;
+      border-bottom: 1px solid var(--rd-border);
+      background: var(--rd-subtle);
+    }
+    .rd-issue-item {
+      display: grid;
+      grid-template-columns: 24px minmax(0, 1fr) auto;
+      gap: 10px;
+      align-items: center;
+      width: 100%;
+      padding: 10px;
+      border: 1px solid var(--rd-border);
+      border-radius: 9px;
+      background: var(--rd-shell);
+      color: var(--rd-text);
+      text-align: left;
+    }
+    .rd-issue-item[aria-current="true"] {
+      border-color: var(--rd-brand);
+      box-shadow: 0 0 0 2px color-mix(in srgb, var(--rd-brand) 20%, transparent);
+    }
+    .rd-issue-number {
+      display: grid;
+      place-items: center;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      color: var(--rd-brand-strong);
+      background: var(--rd-brand-soft);
+      font-size: 12px;
+      font-weight: 750;
+    }
+    .rd-issue-name { font-size: 13px; font-weight: 700; }
+    .rd-issue-path { margin-top: 2px; color: var(--rd-muted); font: 11px ui-monospace, SFMono-Regular, Menlo, monospace; }
+    .rd-issue-state { color: var(--rd-warning); font-size: 12px; font-weight: 650; }
+    .rd-issue-state.is-done { color: var(--rd-success); }
+
+    .rd-form {
+      display: grid;
+      gap: 15px;
+      padding: 16px;
+    }
+    .rd-field-title { font-size: 18px; font-weight: 750; }
+    .rd-field-path { color: var(--rd-muted); font: 11px ui-monospace, SFMono-Regular, Menlo, monospace; overflow-wrap: anywhere; }
+    .rd-reason {
+      width: fit-content;
+      padding: 5px 8px;
+      color: var(--rd-warning);
+      background: var(--rd-warning-soft);
+    }
+    .rd-reason-copy { color: var(--rd-muted); font-size: 13px; line-height: 1.45; }
+
+    .rd-evidence {
+      padding: 12px;
+      border-left: 3px solid var(--rd-brand);
+      background: var(--rd-brand-soft);
+      border-radius: 0 8px 8px 0;
+    }
+    .rd-evidence-label,
+    .rd-control-label { display: block; margin-bottom: 6px; color: var(--rd-muted); font-size: 12px; font-weight: 650; }
+    .rd-evidence-text { font-size: 14px; line-height: 1.45; }
+
+    .rd-values {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .rd-value-block {
+      padding: 10px;
+      border: 1px solid var(--rd-border);
+      border-radius: 8px;
+      background: var(--rd-subtle);
+    }
+    .rd-value-label { color: var(--rd-muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; }
+    .rd-value { margin-top: 4px; font-size: 18px; font-weight: 750; }
+    .rd-confidence { color: var(--rd-warning); font-size: 12px; font-weight: 650; }
+
+    .rd-input,
+    .rd-select {
+      width: 100%;
+      min-height: 40px;
+      padding: 8px 10px;
+      color: var(--rd-text);
+      background: var(--rd-shell);
+      border: 1px solid var(--rd-border);
+      border-radius: 8px;
+    }
+    .rd-input:focus,
+    .rd-select:focus { outline: 3px solid color-mix(in srgb, var(--rd-brand) 30%, transparent); border-color: var(--rd-brand); }
+
+    .rd-choice-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+    .rd-choice-button { min-height: 40px; padding: 8px; font-size: 12px; font-weight: 650; }
+    .rd-choice-button[aria-pressed="true"] { color: var(--rd-brand-strong); background: var(--rd-brand-soft); border-color: var(--rd-brand); }
+
+    .rd-footer {
+      margin-top: auto;
+      padding: 14px 16px;
+      border-top: 1px solid var(--rd-border);
+      background: var(--rd-shell);
+    }
+    .rd-action-row { gap: 8px; justify-content: space-between; }
+    .rd-secondary-button,
+    .rd-primary-button { min-height: 42px; padding: 9px 13px; font-weight: 700; }
+    .rd-primary-button { color: light-dark(#ffffff, #062838); background: var(--rd-brand); border-color: var(--rd-brand); }
+    .rd-primary-button:hover { background: var(--rd-brand-strong); }
+    .rd-footer-note { margin-top: 8px; color: var(--rd-muted); font-size: 11px; text-align: right; }
+
+    .rd-notice {
+      display: none;
+      margin: 0 16px 14px;
+      padding: 10px 12px;
+      color: var(--rd-success);
+      background: color-mix(in srgb, var(--rd-success) 12%, var(--rd-shell));
+      border: 1px solid color-mix(in srgb, var(--rd-success) 40%, transparent);
+      border-radius: 8px;
+      font-size: 13px;
+    }
+    .rd-notice.is-visible { display: block; }
+
+    @media (max-width: 900px) {
+      .rd-workspace { grid-template-columns: 1fr; }
+      .rd-review-panel { order: -1; }
+      .rd-viewer-stage { padding: 14px; }
+    }
+
+    @media (max-width: 560px) {
+      .rd-topbar,
+      .rd-contextbar { align-items: flex-start; padding: 12px; }
+      .rd-topbar,
+      .rd-contextbar { flex-direction: column; }
+      .rd-top-actions { justify-content: flex-start; }
+      .rd-reviewer { padding-left: 0; border-left: 0; }
+      .rd-workspace { padding: 8px; gap: 8px; }
+      .rd-values { grid-template-columns: 1fr; }
+      .rd-choice-grid { grid-template-columns: 1fr; }
+      .rd-action-row { align-items: stretch; flex-direction: column-reverse; }
+      .rd-secondary-button,
+      .rd-primary-button { width: 100%; }
+      .rd-paper { padding: 5%; }
+    }
+  </style>
+</head>
+<body>
+  <main class="rd-app" id="reviewDeskApp">
+    <header class="rd-topbar">
+      <div class="rd-brand-group">
+        <div class="rd-mark" aria-hidden="true">O</div>
+        <div>
+          <div class="rd-product-name">Ocrolus Review Desk</div>
+          <div class="rd-product-subtitle">Document-supported corrections</div>
+        </div>
+      </div>
+      <div class="rd-top-actions">
+        <span class="rd-status">Pending review</span>
+        <span class="rd-reviewer">Reviewer: Alex Morgan</span>
+      </div>
+    </header>
+
+    <section class="rd-contextbar" aria-label="Review task context">
+      <div class="rd-doc-meta">
+        <div class="rd-meta-block"><div class="rd-meta-label">Document</div><div class="rd-meta-value">Pay stub</div></div>
+        <div class="rd-meta-block"><div class="rd-meta-label">Document ID</div><div class="rd-meta-value">doc_123</div></div>
+        <div class="rd-meta-block"><div class="rd-meta-label">Employer</div><div class="rd-meta-value">Acme Corporation</div></div>
+        <div class="rd-meta-block"><div class="rd-meta-label">Pay date</div><div class="rd-meta-value">Aug 18, 2026</div></div>
+      </div>
+      <span class="rd-review-type">Field review</span>
+    </section>
+
+    <section class="rd-workspace">
+      <article class="rd-viewer" aria-label="Source document viewer">
+        <div class="rd-viewer-header">
+          <div>
+            <div class="rd-viewer-title">Source page</div>
+            <div class="rd-muted" style="font-size:12px">Page 1 of 1 · original evidence</div>
+          </div>
+          <div class="rd-viewer-tools" aria-label="Document zoom controls">
+            <button class="rd-icon-button" id="zoomOut" type="button" aria-label="Zoom out">−</button>
+            <button class="rd-icon-button" id="zoomLabel" type="button" aria-label="Reset zoom">100%</button>
+            <button class="rd-icon-button" id="zoomIn" type="button" aria-label="Zoom in">+</button>
+          </div>
+        </div>
+        <div class="rd-viewer-stage">
+          <div class="rd-page-wrap" id="pageWrap">
+            <div class="rd-paper">
+              <div class="rd-paper-brand">
+                <div class="rd-paper-company">ACME CORPORATION</div>
+                <div class="rd-paper-paystub"><strong>Earnings Statement</strong>Pay date: 08/18/2026</div>
+              </div>
+              <div class="rd-paper-grid">
+                <div class="rd-paper-box"><strong>Employee</strong>Jane Doe<br>Employee ID: EMP-4821<br>Department: Operations</div>
+                <div class="rd-paper-box"><strong>Pay period</strong>08/01/2026 - 08/15/2026<br>Frequency: Bi-weekly</div>
+              </div>
+              <table class="rd-pay-table" aria-label="Earnings shown on source pay stub">
+                <thead><tr><th>Earnings</th><th>Rate</th><th>Hours</th><th>Current</th><th>YTD</th></tr></thead>
+                <tbody>
+                  <tr><td>Regular Pay</td><td>48.08</td><td>80.00</td><td>3,846.15</td><td>7,692.30</td></tr>
+                  <tr><td>Overtime</td><td>72.12</td><td>5.55</td><td>400.00</td><td id="sourceOvertimeYtd">400.00</td></tr>
+                  <tr class="rd-total"><td>Gross Pay</td><td></td><td></td><td>4,246.15</td><td>8,092.30</td></tr>
+                </tbody>
+              </table>
+              <table class="rd-pay-table" aria-label="Deductions shown on source pay stub">
+                <thead><tr><th>Deductions</th><th>Type</th><th></th><th>Current</th><th>YTD</th></tr></thead>
+                <tbody>
+                  <tr><td>Federal Tax</td><td>Post-tax</td><td></td><td>576.92</td><td>1,153.84</td></tr>
+                  <tr><td>Health Insurance</td><td>Pre-tax</td><td></td><td id="sourceHealthInsuranceCurrent">150.00</td><td>300.00</td></tr>
+                  <tr><td>401(k)</td><td>Pre-tax</td><td></td><td>228.85</td><td>457.70</td></tr>
+                  <tr class="rd-total"><td>Total Deductions</td><td></td><td></td><td>955.77</td><td>1,911.54</td></tr>
+                </tbody>
+              </table>
+              <table class="rd-pay-table" aria-label="Net pay shown on source pay stub">
+                <tbody><tr class="rd-total"><td>Net Pay</td><td></td><td></td><td>3,290.38</td><td>6,180.76</td></tr></tbody>
+              </table>
+              <div class="rd-highlight" id="fieldHighlight" aria-hidden="true"></div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <aside class="rd-review-panel" aria-label="Field correction panel">
+        <div class="rd-review-header">
+          <div>
+            <div class="rd-review-title">Fields to review</div>
+            <div class="rd-muted" style="font-size:12px">Resolve document facts only</div>
+          </div>
+          <div class="rd-progress-row">
+            <span class="rd-muted" id="progressText" style="font-size:12px">1 of 2</span>
+            <div class="rd-progress-track" aria-hidden="true"><div class="rd-progress-fill" id="progressFill"></div></div>
+          </div>
+        </div>
+
+        <div class="rd-issue-list" role="list" aria-label="Review issues">
+          <button class="rd-issue-item" type="button" data-issue="overtime" aria-current="true">
+            <span class="rd-issue-number">1</span>
+            <span><span class="rd-issue-name">Overtime YTD</span><span class="rd-issue-path">/earnings/items/1/year_to_date_amount</span></span>
+            <span class="rd-issue-state">Review</span>
+          </button>
+          <button class="rd-issue-item" type="button" data-issue="insurance" aria-current="false">
+            <span class="rd-issue-number">2</span>
+            <span><span class="rd-issue-name">Health insurance current</span><span class="rd-issue-path">/deductions/items/1/current_amount</span></span>
+            <span class="rd-issue-state">Review</span>
+          </button>
+        </div>
+
+        <form class="rd-form" id="reviewForm">
+          <div>
+            <div class="rd-field-title" id="fieldTitle">Overtime YTD</div>
+            <div class="rd-field-path" id="fieldPath">/earnings/items/1/year_to_date_amount</div>
+          </div>
+          <div>
+            <span class="rd-reason" id="reasonCode">YTD_LESS_THAN_CURRENT</span>
+            <div class="rd-reason-copy" id="reasonCopy">The year-to-date value requires verification against the printed earnings row.</div>
+          </div>
+          <div class="rd-evidence">
+            <span class="rd-evidence-label">Highlighted source text</span>
+            <div class="rd-evidence-text" id="evidenceText">Overtime · Current 400.00 · YTD 400.00</div>
+          </div>
+          <div class="rd-values">
+            <div class="rd-value-block">
+              <div class="rd-value-label">Proposed value</div>
+              <div class="rd-value" id="proposedValue">$400.00</div>
+            </div>
+            <div class="rd-value-block">
+              <div class="rd-value-label">Model confidence</div>
+              <div class="rd-value rd-confidence" id="confidenceValue">72%</div>
+            </div>
+          </div>
+          <div>
+            <label class="rd-control-label" for="correctedValue">Supported value from document</label>
+            <input class="rd-input" id="correctedValue" name="correctedValue" inputmode="decimal" value="400.00" autocomplete="off">
+          </div>
+          <div>
+            <label class="rd-control-label" for="correctionReason">Correction reason</label>
+            <select class="rd-select" id="correctionReason" name="correctionReason">
+              <option value="source_verified">Verified against highlighted source</option>
+              <option value="model_misread">Model misread printed value</option>
+              <option value="wrong_column">Current/YTD column mismatch</option>
+              <option value="unsupported">Value not supported by document</option>
+            </select>
+          </div>
+          <div>
+            <span class="rd-control-label">Reviewer action</span>
+            <div class="rd-choice-grid">
+              <button class="rd-choice-button" type="button" data-action="confirm" aria-pressed="false">Confirm proposed</button>
+              <button class="rd-choice-button" type="button" data-action="correct" aria-pressed="true">Correct value</button>
+              <button class="rd-choice-button" type="button" data-action="unsupported" aria-pressed="false">Mark unsupported</button>
+            </div>
+          </div>
+        </form>
+
+        <div class="rd-notice" id="reviewNotice" role="status" aria-live="polite"></div>
+
+        <footer class="rd-footer">
+          <div class="rd-action-row">
+            <button class="rd-secondary-button" id="escalateButton" type="button">Escalate to full review</button>
+            <button class="rd-primary-button" id="submitButton" type="button">Save and revalidate</button>
+          </div>
+          <div class="rd-footer-note">Submission creates an audited candidate version.</div>
+        </footer>
+      </aside>
+    </section>
+  </main>
+
+  <script>
+    const root = document.getElementById('reviewDeskApp');
+    const issues = {
+      overtime: {
+        title: 'Overtime YTD',
+        path: '/earnings/items/1/year_to_date_amount',
+        code: 'YTD_LESS_THAN_CURRENT',
+        reason: 'The year-to-date value requires verification against the printed earnings row.',
+        evidence: 'Overtime · Current 400.00 · YTD 400.00',
+        proposed: '$400.00',
+        input: '400.00',
+        confidence: '72%',
+        target: '#sourceOvertimeYtd'
+      },
+      insurance: {
+        title: 'Health insurance current',
+        path: '/deductions/items/1/current_amount',
+        code: 'FIELD_CONFIDENCE_BELOW_AUTO_ACCEPT_THRESHOLD',
+        reason: 'The printed amount is readable but below the current field-review confidence gate.',
+        evidence: 'Health Insurance · Pre-tax · Current 150.00 · YTD 300.00',
+        proposed: '$150.00',
+        input: '150.00',
+        confidence: '82%',
+        target: '#sourceHealthInsuranceCurrent'
+      }
+    };
+
+    let selectedIssue = 'overtime';
+    let selectedAction = 'correct';
+    let zoom = 1;
+    const completed = new Set();
+
+    const fieldTitle = root.querySelector('#fieldTitle');
+    const fieldPath = root.querySelector('#fieldPath');
+    const reasonCode = root.querySelector('#reasonCode');
+    const reasonCopy = root.querySelector('#reasonCopy');
+    const evidenceText = root.querySelector('#evidenceText');
+    const proposedValue = root.querySelector('#proposedValue');
+    const confidenceValue = root.querySelector('#confidenceValue');
+    const correctedValue = root.querySelector('#correctedValue');
+    const correctionReason = root.querySelector('#correctionReason');
+    const fieldHighlight = root.querySelector('#fieldHighlight');
+    const reviewNotice = root.querySelector('#reviewNotice');
+    const progressText = root.querySelector('#progressText');
+    const progressFill = root.querySelector('#progressFill');
+    const pageWrap = root.querySelector('#pageWrap');
+    const zoomLabel = root.querySelector('#zoomLabel');
+    const paper = root.querySelector('.rd-paper');
+
+    function positionHighlight() {
+      const target = root.querySelector(issues[selectedIssue].target);
+      const paperBox = paper.getBoundingClientRect();
+      const targetBox = target.getBoundingClientRect();
+      fieldHighlight.style.left = `${((targetBox.left - paperBox.left) / paperBox.width) * 100}%`;
+      fieldHighlight.style.top = `${((targetBox.top - paperBox.top) / paperBox.height) * 100}%`;
+      fieldHighlight.style.width = `${(targetBox.width / paperBox.width) * 100}%`;
+      fieldHighlight.style.height = `${(targetBox.height / paperBox.height) * 100}%`;
+    }
+
+    function renderIssue() {
+      const issue = issues[selectedIssue];
+      fieldTitle.textContent = issue.title;
+      fieldPath.textContent = issue.path;
+      reasonCode.textContent = issue.code;
+      reasonCopy.textContent = issue.reason;
+      evidenceText.textContent = issue.evidence;
+      proposedValue.textContent = issue.proposed;
+      confidenceValue.textContent = issue.confidence;
+      correctedValue.value = issue.input;
+      window.requestAnimationFrame(positionHighlight);
+      root.querySelectorAll('.rd-issue-item').forEach((item) => {
+        item.setAttribute('aria-current', String(item.dataset.issue === selectedIssue));
+      });
+      reviewNotice.classList.remove('is-visible');
+    }
+
+    function renderAction() {
+      root.querySelectorAll('.rd-choice-button').forEach((button) => {
+        button.setAttribute('aria-pressed', String(button.dataset.action === selectedAction));
+      });
+      correctedValue.disabled = selectedAction !== 'correct';
+      if (selectedAction === 'unsupported') {
+        correctionReason.value = 'unsupported';
+      } else if (correctionReason.value === 'unsupported') {
+        correctionReason.value = 'source_verified';
+      }
+    }
+
+    function renderProgress() {
+      const count = completed.size;
+      const current = Math.min(count + 1, 2);
+      progressText.textContent = count === 2 ? '2 of 2 complete' : `${current} of 2`;
+      progressFill.style.width = `${Math.max(50, count * 50)}%`;
+      root.querySelectorAll('.rd-issue-item').forEach((item) => {
+        const state = item.querySelector('.rd-issue-state');
+        const isDone = completed.has(item.dataset.issue);
+        state.textContent = isDone ? 'Done' : 'Review';
+        state.classList.toggle('is-done', isDone);
+      });
+    }
+
+    root.querySelectorAll('.rd-issue-item').forEach((item) => {
+      item.addEventListener('click', () => {
+        selectedIssue = item.dataset.issue;
+        selectedAction = 'correct';
+        renderIssue();
+        renderAction();
+      });
+    });
+
+    root.querySelectorAll('.rd-choice-button').forEach((button) => {
+      button.addEventListener('click', () => {
+        selectedAction = button.dataset.action;
+        renderAction();
+      });
+    });
+
+    root.querySelector('#submitButton').addEventListener('click', () => {
+      if (selectedAction === 'correct' && !correctedValue.value.trim()) {
+        reviewNotice.textContent = 'Enter the supported value or mark the field unsupported.';
+        reviewNotice.style.color = 'var(--rd-danger)';
+        reviewNotice.classList.add('is-visible');
+        correctedValue.focus();
+        return;
+      }
+      reviewNotice.style.color = 'var(--rd-success)';
+      reviewNotice.textContent = `${issues[selectedIssue].title} saved as a new audited candidate version. A7 revalidation queued.`;
+      reviewNotice.classList.add('is-visible');
+      completed.add(selectedIssue);
+      renderProgress();
+    });
+
+    root.querySelector('#escalateButton').addEventListener('click', () => {
+      reviewNotice.style.color = 'var(--rd-warning)';
+      reviewNotice.textContent = 'Task escalated to full review; the current field evidence and audit history were preserved.';
+      reviewNotice.classList.add('is-visible');
+    });
+
+    function setZoom(nextZoom) {
+      zoom = Math.max(0.8, Math.min(1.2, nextZoom));
+      pageWrap.style.transform = `scale(${zoom})`;
+      zoomLabel.textContent = `${Math.round(zoom * 100)}%`;
+      window.requestAnimationFrame(positionHighlight);
+    }
+
+    root.querySelector('#zoomOut').addEventListener('click', () => setZoom(zoom - 0.1));
+    root.querySelector('#zoomIn').addEventListener('click', () => setZoom(zoom + 0.1));
+    zoomLabel.addEventListener('click', () => setZoom(1));
+
+    new ResizeObserver(positionHighlight).observe(paper);
+
+    renderIssue();
+    renderAction();
+    renderProgress();
+  </script>
+</body>
+</html>

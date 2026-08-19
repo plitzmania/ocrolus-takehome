@@ -1,0 +1,157 @@
+{
+  "schema_version": "1.0",
+  "task_id": "review-synthetic-suspicious-ytd-001-v1",
+  "task_version": 1,
+  "state": "CLAIMED",
+  "reviewer_id": "demo-reviewer",
+  "document_id": "synthetic-suspicious-ytd-001",
+  "document_type": "pay_stub",
+  "review_type": "FIELD_REVIEW",
+  "candidate": {
+    "currency": "USD",
+    "employee": {
+      "name": "Sample Employee",
+      "id": "EMP-4821"
+    },
+    "employer": {
+      "name": "Example Employer LLC"
+    },
+    "pay_period": {
+      "start": "2026-07-01",
+      "end": "2026-07-15",
+      "pay_date": "2026-07-18",
+      "frequency": "bi_weekly"
+    },
+    "compensation_rate": {
+      "basis": null,
+      "amount": null,
+      "unit": null
+    },
+    "earnings": {
+      "gross": {
+        "current": "2500.00",
+        "year_to_date": "22500.00"
+      },
+      "items": [
+        {
+          "label": "Regular Pay",
+          "type": "regular",
+          "current_amount": "2500.00",
+          "year_to_date_amount": "22500.00",
+          "rate": null,
+          "hours": null
+        }
+      ]
+    },
+    "deductions": {
+      "total": {
+        "current": "500.00",
+        "year_to_date": "50.00"
+      },
+      "items": [
+        {
+          "label": "Mystery Benefit",
+          "type": "other",
+          "tax_treatment": "unknown",
+          "current_amount": "500.00",
+          "year_to_date_amount": "50.00"
+        }
+      ]
+    },
+    "net_pay": {
+      "current": "2000.00",
+      "year_to_date": "22450.00"
+    }
+  },
+  "routing": {
+    "average_confidence": 0.981739,
+    "fields": [
+      "/deductions/items/0/current_amount",
+      "/deductions/items/0/tax_treatment",
+      "/deductions/items/0/year_to_date_amount"
+    ],
+    "reasons": [
+      {
+        "code": "VALIDATION_WARNING",
+        "message": "A deterministic check requires targeted review.",
+        "fields": [
+          "/deductions/items/0/current_amount",
+          "/deductions/items/0/tax_treatment",
+          "/deductions/items/0/year_to_date_amount"
+        ]
+      },
+      {
+        "code": "FIELD_CONFIDENCE_BELOW_AUTO_ACCEPT_THRESHOLD",
+        "message": "One or more fields are below the auto-accept confidence threshold.",
+        "fields": [
+          "/deductions/items/0/current_amount",
+          "/deductions/items/0/tax_treatment",
+          "/deductions/items/0/year_to_date_amount"
+        ]
+      },
+      {
+        "code": "YTD_LESS_THAN_CURRENT",
+        "message": "The year-to-date amount is smaller than the current-period amount.",
+        "fields": [
+          "/deductions/items/0/current_amount",
+          "/deductions/items/0/year_to_date_amount"
+        ]
+      }
+    ],
+    "validation_issues": [
+      {
+        "code": "YTD_LESS_THAN_CURRENT",
+        "severity": "WARNING",
+        "message": "The year-to-date amount is smaller than the current-period amount.",
+        "fields": [
+          "/deductions/items/0/current_amount",
+          "/deductions/items/0/year_to_date_amount"
+        ]
+      }
+    ]
+  },
+  "field_observations": [
+    {
+      "path": "/deductions/items/0/tax_treatment",
+      "value": "unknown",
+      "confidence": 0.8,
+      "source": "simulated",
+      "review_required": true,
+      "evidence": [
+        {
+          "page": 1,
+          "text": "Mystery Benefit",
+          "bounding_box": [0.12, 0.55, 0.39, 0.59]
+        }
+      ]
+    },
+    {
+      "path": "/deductions/items/0/current_amount",
+      "value": "500.00",
+      "confidence": 0.99,
+      "source": "simulated",
+      "review_required": true,
+      "evidence": []
+    },
+    {
+      "path": "/deductions/items/0/year_to_date_amount",
+      "value": "50.00",
+      "confidence": 0.99,
+      "source": "simulated",
+      "review_required": true,
+      "evidence": [
+        {
+          "page": 1,
+          "text": "Mystery Benefit YTD 50.00",
+          "bounding_box": [0.62, 0.55, 0.88, 0.59]
+        }
+      ]
+    }
+  ],
+  "provenance": {
+    "extraction_source": "simulated_upstream_output",
+    "rules_version": "validation-v1",
+    "routing_policy_version": "confidence-v1",
+    "pipeline_version": "prototype-v1"
+  }
+}

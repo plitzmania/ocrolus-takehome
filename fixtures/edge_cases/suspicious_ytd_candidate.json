@@ -1,0 +1,60 @@
+{
+  "document_id": "synthetic-suspicious-ytd-001",
+  "source": "simulated_upstream_output",
+  "document_readability": 0.99,
+  "currency": {"value": "USD", "confidence": 0.99},
+  "employee": {
+    "name": {"value": "Sample Employee", "confidence": 0.99},
+    "id": {"value": "EMP-4821", "confidence": 0.99}
+  },
+  "employer": {
+    "name": {"value": "Example Employer LLC", "confidence": 0.99}
+  },
+  "pay_period": {
+    "start": {"value": "2026-07-01", "confidence": 0.99},
+    "end": {"value": "2026-07-15", "confidence": 0.99},
+    "pay_date": {"value": "2026-07-18", "confidence": 0.99},
+    "frequency": {"value": "bi_weekly", "confidence": 0.99}
+  },
+  "earnings": [
+    {
+      "label": {"value": "Regular Pay", "confidence": 0.99},
+      "type": {"value": "regular", "confidence": 0.99},
+      "current_amount": {"value": "2500.00", "confidence": 0.99},
+      "year_to_date_amount": {"value": "22500.00", "confidence": 0.99}
+    }
+  ],
+  "deductions": [
+    {
+      "label": {"value": "Mystery Benefit", "confidence": 0.99},
+      "type": {"value": "other", "confidence": 0.99},
+      "tax_treatment": {
+        "value": "unknown",
+        "confidence": 0.80,
+        "evidence": {
+          "page": 1,
+          "text": "Mystery Benefit",
+          "bounding_box": [0.12, 0.55, 0.39, 0.59]
+        }
+      },
+      "current_amount": {"value": "500.00", "confidence": 0.99},
+      "year_to_date_amount": {
+        "value": "50.00",
+        "confidence": 0.99,
+        "evidence": {
+          "page": 1,
+          "text": "Mystery Benefit YTD 50.00",
+          "bounding_box": [0.62, 0.55, 0.88, 0.59]
+        }
+      }
+    }
+  ],
+  "totals": {
+    "gross_pay": {"value": "2500.00", "confidence": 0.99},
+    "gross_pay_ytd": {"value": "22500.00", "confidence": 0.99},
+    "total_deductions": {"value": "500.00", "confidence": 0.99},
+    "total_deductions_ytd": {"value": "50.00", "confidence": 0.99},
+    "net_pay": {"value": "2000.00", "confidence": 0.99},
+    "net_pay_ytd": {"value": "22450.00", "confidence": 0.99}
+  }
+}
