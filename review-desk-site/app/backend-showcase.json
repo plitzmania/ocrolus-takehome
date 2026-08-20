@@ -1,0 +1,83 @@
+{
+  "command": "./demo",
+  "routes": [
+    {
+      "id": "A",
+      "scenario": "Clean extraction",
+      "fixture": "fixtures/clean_candidate.json",
+      "document_id": "synthetic-clean-001",
+      "decision": "AUTO_ACCEPT",
+      "processing_status": "COMPLETED_AUTO",
+      "delivery": "business data delivered",
+      "reasons": [
+        "ALL_CHECKS_PASSED"
+      ],
+      "review_field_count": 0,
+      "review_task_id": null
+    },
+    {
+      "id": "B",
+      "scenario": "Suspicious YTD",
+      "fixture": "fixtures/edge_cases/suspicious_ytd_candidate.json",
+      "document_id": "synthetic-suspicious-ytd-001",
+      "decision": "FIELD_REVIEW",
+      "processing_status": "NEEDS_REVIEW",
+      "delivery": "business data withheld",
+      "reasons": [
+        "VALIDATION_WARNING",
+        "FIELD_CONFIDENCE_BELOW_AUTO_ACCEPT_THRESHOLD",
+        "YTD_LESS_THAN_CURRENT"
+      ],
+      "review_field_count": 3,
+      "review_task_id": "review-synthetic-suspicious-ytd-001-v1"
+    },
+    {
+      "id": "C",
+      "scenario": "Accounting mismatch",
+      "fixture": "fixtures/edge_cases/gross_net_mismatch_candidate.json",
+      "document_id": "synthetic-gross-net-mismatch-001",
+      "decision": "FULL_REVIEW",
+      "processing_status": "NEEDS_REVIEW",
+      "delivery": "business data withheld",
+      "reasons": [
+        "DETERMINISTIC_VALIDATION_FAILED",
+        "GROSS_NET_MISMATCH"
+      ],
+      "review_field_count": 3,
+      "review_task_id": "review-synthetic-gross-net-mismatch-001-v1"
+    },
+    {
+      "id": "D",
+      "scenario": "Unreadable document",
+      "fixture": "fixtures/edge_cases/unreadable_candidate.json",
+      "document_id": "synthetic-unreadable-001",
+      "decision": "REJECT",
+      "processing_status": "NEEDS_REVIEW",
+      "delivery": "business data withheld",
+      "reasons": [
+        "DOCUMENT_UNREADABLE",
+        "MISSING_REQUIRED_FIELD"
+      ],
+      "review_field_count": 0,
+      "review_task_id": null
+    }
+  ],
+  "safety_gate": {
+    "label": "Suspicious values in lender response",
+    "passed": true,
+    "result": "NO — correctly withheld"
+  },
+  "review_handoff": {
+    "task_id": "review-synthetic-suspicious-ytd-001-v1",
+    "flagged_fields": 3,
+    "evidence_backed_observations": 2,
+    "contract": "Python task exactly matches the bundled frontend fixture"
+  },
+  "code_path": [
+    "validation.py",
+    "confidence.py",
+    "routing.py",
+    "result.py / review.py"
+  ],
+  "live_url": "https://ocrolus-review-desk.benteplitzky15.chatgpt.site"
+}

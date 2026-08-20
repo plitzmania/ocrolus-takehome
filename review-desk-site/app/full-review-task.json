@@ -1,0 +1,298 @@
+{
+  "schema_version": "1.0",
+  "task_id": "review-synthetic-gross-net-mismatch-001-v1",
+  "task_version": 1,
+  "state": "CLAIMED",
+  "reviewer_id": "demo-reviewer",
+  "document_id": "synthetic-gross-net-mismatch-001",
+  "document_type": "pay_stub",
+  "review_type": "FULL_REVIEW",
+  "candidate": {
+    "currency": "USD",
+    "employee": {
+      "name": "Sample Employee",
+      "id": "EMP-4821"
+    },
+    "employer": {
+      "name": "Example Employer LLC"
+    },
+    "pay_period": {
+      "start": "2026-07-01",
+      "end": "2026-07-15",
+      "pay_date": "2026-07-18",
+      "frequency": "bi_weekly"
+    },
+    "compensation_rate": {
+      "basis": null,
+      "amount": null,
+      "unit": null
+    },
+    "earnings": {
+      "gross": {
+        "current": "2500.00",
+        "year_to_date": "22500.00"
+      },
+      "items": [
+        {
+          "label": "Regular Pay",
+          "type": "regular",
+          "current_amount": "2500.00",
+          "year_to_date_amount": "22500.00",
+          "rate": null,
+          "hours": null
+        }
+      ]
+    },
+    "deductions": {
+      "total": {
+        "current": "500.00",
+        "year_to_date": "4500.00"
+      },
+      "items": [
+        {
+          "label": "Federal Tax",
+          "type": "federal_tax",
+          "tax_treatment": "post_tax",
+          "current_amount": "500.00",
+          "year_to_date_amount": "4500.00"
+        }
+      ]
+    },
+    "net_pay": {
+      "current": "2100.00",
+      "year_to_date": "18000.00"
+    }
+  },
+  "routing": {
+    "average_confidence": 0.99,
+    "fields": [
+      "/earnings/gross/current",
+      "/net_pay/current",
+      "/deductions/total/current"
+    ],
+    "reasons": [
+      {
+        "code": "DETERMINISTIC_VALIDATION_FAILED",
+        "message": "One or more deterministic checks failed.",
+        "fields": [
+          "/earnings/gross/current",
+          "/net_pay/current",
+          "/deductions/total/current"
+        ]
+      },
+      {
+        "code": "GROSS_NET_MISMATCH",
+        "message": "Gross pay minus total deductions does not equal net pay.",
+        "fields": [
+          "/earnings/gross/current",
+          "/deductions/total/current",
+          "/net_pay/current"
+        ]
+      }
+    ],
+    "validation_issues": [
+      {
+        "code": "GROSS_NET_MISMATCH",
+        "severity": "ERROR",
+        "message": "Gross pay minus total deductions does not equal net pay.",
+        "fields": [
+          "/earnings/gross/current",
+          "/deductions/total/current",
+          "/net_pay/current"
+        ]
+      }
+    ]
+  },
+  "field_observations": [
+    {
+      "path": "/currency",
+      "value": "USD",
+      "confidence": 0.99,
+      "source": "simulated",
+      "review_required": false,
+      "evidence": []
+    },
+    {
+      "path": "/employee/name",
+      "value": "Sample Employee",
+      "confidence": 0.99,
+      "source": "simulated",
+      "review_required": false,
+      "evidence": []
+    },
+    {
+      "path": "/employee/id",
+      "value": "EMP-4821",
+      "confidence": 0.99,
+      "source": "simulated",
+      "review_required": false,
+      "evidence": []
+    },
+    {
+      "path": "/employer/name",
+      "value": "Example Employer LLC",
+      "confidence": 0.99,
+      "source": "simulated",
+      "review_required": false,
+      "evidence": []
+    },
+    {
+      "path": "/pay_period/start",
+      "value": "2026-07-01",
+      "confidence": 0.99,
+      "source": "simulated",
+      "review_required": false,
+      "evidence": []
+    },
+    {
+      "path": "/pay_period/end",
+      "value": "2026-07-15",
+      "confidence": 0.99,
+      "source": "simulated",
+      "review_required": false,
+      "evidence": []
+    },
+    {
+      "path": "/pay_period/pay_date",
+      "value": "2026-07-18",
+      "confidence": 0.99,
+      "source": "simulated",
+      "review_required": false,
+      "evidence": []
+    },
+    {
+      "path": "/pay_period/frequency",
+      "value": "bi_weekly",
+      "confidence": 0.99,
+      "source": "simulated",
+      "review_required": false,
+      "evidence": []
+    },
+    {
+      "path": "/earnings/items/0/label",
+      "value": "Regular Pay",
+      "confidence": 0.99,
+      "source": "simulated",
+      "review_required": false,
+      "evidence": []
+    },
+    {
+      "path": "/earnings/items/0/type",
+      "value": "regular",
+      "confidence": 0.99,
+      "source": "simulated",
+      "review_required": false,
+      "evidence": []
+    },
+    {
+      "path": "/earnings/items/0/current_amount",
+      "value": "2500.00",
+      "confidence": 0.99,
+      "source": "simulated",
+      "review_required": false,
+      "evidence": []
+    },
+    {
+      "path": "/earnings/items/0/year_to_date_amount",
+      "value": "22500.00",
+      "confidence": 0.99,
+      "source": "simulated",
+      "review_required": false,
+      "evidence": []
+    },
+    {
+      "path": "/deductions/items/0/label",
+      "value": "Federal Tax",
+      "confidence": 0.99,
+      "source": "simulated",
+      "review_required": false,
+      "evidence": []
+    },
+    {
+      "path": "/deductions/items/0/type",
+      "value": "federal_tax",
+      "confidence": 0.99,
+      "source": "simulated",
+      "review_required": false,
+      "evidence": []
+    },
+    {
+      "path": "/deductions/items/0/tax_treatment",
+      "value": "post_tax",
+      "confidence": 0.99,
+      "source": "simulated",
+      "review_required": false,
+      "evidence": []
+    },
+    {
+      "path": "/deductions/items/0/current_amount",
+      "value": "500.00",
+      "confidence": 0.99,
+      "source": "simulated",
+      "review_required": false,
+      "evidence": []
+    },
+    {
+      "path": "/deductions/items/0/year_to_date_amount",
+      "value": "4500.00",
+      "confidence": 0.99,
+      "source": "simulated",
+      "review_required": false,
+      "evidence": []
+    },
+    {
+      "path": "/earnings/gross/current",
+      "value": "2500.00",
+      "confidence": 0.99,
+      "source": "simulated",
+      "review_required": true,
+      "evidence": []
+    },
+    {
+      "path": "/earnings/gross/year_to_date",
+      "value": "22500.00",
+      "confidence": 0.99,
+      "source": "simulated",
+      "review_required": false,
+      "evidence": []
+    },
+    {
+      "path": "/deductions/total/current",
+      "value": "500.00",
+      "confidence": 0.99,
+      "source": "simulated",
+      "review_required": true,
+      "evidence": []
+    },
+    {
+      "path": "/deductions/total/year_to_date",
+      "value": "4500.00",
+      "confidence": 0.99,
+      "source": "simulated",
+      "review_required": false,
+      "evidence": []
+    },
+    {
+      "path": "/net_pay/current",
+      "value": "2100.00",
+      "confidence": 0.99,
+      "source": "simulated",
+      "review_required": true,
+      "evidence": []
+    },
+    {
+      "path": "/net_pay/year_to_date",
+      "value": "18000.00",
+      "confidence": 0.99,
+      "source": "simulated",
+      "review_required": false,
+      "evidence": []
+    }
+  ],
+  "provenance": {
+    "extraction_source": "simulated_upstream_output",
+    "rules_version": "validation-v1",
+    "routing_policy_version": "confidence-v1",
+    "pipeline_version": "prototype-v1"
+  }
+}

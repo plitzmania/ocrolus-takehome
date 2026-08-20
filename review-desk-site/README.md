@@ -2,13 +2,19 @@
 
 Interactive companion to the A9 review-desk design in the Ocrolus take-home. It
 demonstrates field-level evidence review, correction, escalation, and
-revalidation with synthetic pay-stub data.
+revalidation with synthetic pay-stub data. A second **Backend demo** tab
+randomly replays one of four Python-generated fixtures so reviewers can see the
+validation, routing, delivery gate, and optional UI handoff without opening a
+terminal.
 
 The page imports `app/review-task.json`, which is the checked-in output of the
 Python `build_review_task` contract for
 `fixtures/edge_cases/suspicious_ytd_candidate.json`. The root Python test suite
 rebuilds that task and requires an exact match, so the frontend cannot silently
 drift away from the router.
+
+The backend tab imports `app/backend-showcase.json`. The root showcase test
+rebuilds that payload from all four Python fixtures and requires an exact match.
 
 ## Run locally
 

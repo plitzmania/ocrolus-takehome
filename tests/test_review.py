@@ -28,6 +28,25 @@ def test_field_review_task_matches_the_ui_fixture():
     assert task == expected
 
 
+def test_full_review_task_matches_the_ui_fixture():
+    candidate = PayStubCandidate.from_json_file(
+        ROOT / "fixtures" / "edge_cases" / "gross_net_mismatch_candidate.json"
+    )
+    expected = json.loads(
+        (ROOT / "review-desk-site" / "app" / "full-review-task.json").read_text(
+            encoding="utf-8"
+        )
+    )
+
+    task = build_review_task(
+        candidate,
+        state="CLAIMED",
+        reviewer_id="demo-reviewer",
+    )
+
+    assert task == expected
+
+
 def test_review_task_uses_public_json_pointers():
     candidate = PayStubCandidate.from_json_file(
         ROOT / "fixtures" / "edge_cases" / "suspicious_ytd_candidate.json"

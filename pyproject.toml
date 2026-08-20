@@ -15,6 +15,7 @@ test = ["jsonschema>=4.23", "pytest>=8", "ruff>=0.12"]
 
 [project.scripts]
 ocrolus-takehome-demo = "ocrolus_takehome.demo:main"
+ocrolus-takehome-showcase = "ocrolus_takehome.showcase:main"
 ocrolus-review-task = "ocrolus_takehome.review:main"
 
 [tool.setuptools.packages.find]

@@ -5,6 +5,9 @@ It implements one component of a larger document-extraction pipeline: the gate
 that decides whether a pay-stub extraction can be accepted automatically or
 needs human attention.
 
+For a recipient-ready setup and usage guide, start with
+[`HANDOFF.md`](HANDOFF.md).
+
 The prototype deliberately starts **after** OCR/model extraction. Synthetic
 JSON fixtures stand in for the typed output of an upstream model. The code
 parses that output, runs deterministic consistency checks, evaluates
@@ -24,13 +27,18 @@ gate.
 
 The package requires Python 3.9 or newer and has no runtime dependencies.
 
-With [`uv`](https://docs.astral.sh/uv/):
+For a presentation-ready, one-command walkthrough of all four routes, the
+delivery safety gate, and the frontend handoff:
+
+```bash
+./demo
+```
+
+The equivalent [`uv`](https://docs.astral.sh/uv/) commands are:
 
 ```bash
 uv sync --extra test --no-editable
-uv run --extra test --no-editable ocrolus-takehome-demo fixtures/clean_candidate.json --summary
-uv run --extra test --no-editable ruff check src tests
-uv run --extra test --no-editable pytest
+uv run --extra test --no-editable ocrolus-takehome-showcase
 ```
 
 With standard Python tooling:
@@ -39,8 +47,7 @@ With standard Python tooling:
 python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install '.[test]'
-ocrolus-takehome-demo fixtures/clean_candidate.json --summary
-pytest
+ocrolus-takehome-showcase
 ```
 
 Run the reviewer interface in a second terminal:
@@ -53,6 +60,8 @@ npm run dev
 
 Or open the privately hosted prototype at
 [ocrolus-review-desk.benteplitzky15.chatgpt.site](https://ocrolus-review-desk.benteplitzky15.chatgpt.site).
+Use **Backend demo** for the routing and safety walkthrough, then switch to
+**Reviewer workflow** for the human-review interaction.
 
 Omit `--summary` to print the lender-facing, delivery-gated response. An
 auto-accepted fixture includes the completed business data; every review route
@@ -65,14 +74,14 @@ uv run --extra test --no-editable ocrolus-takehome-demo fixtures/clean_candidate
 ## Try every routing outcome
 
 ```bash
-uv run --extra test --no-editable ocrolus-takehome-demo fixtures/clean_candidate.json --summary
-uv run --extra test --no-editable ocrolus-takehome-demo fixtures/edge_cases/suspicious_ytd_candidate.json --summary
-uv run --extra test --no-editable ocrolus-takehome-demo fixtures/edge_cases/gross_net_mismatch_candidate.json --summary
-uv run --extra test --no-editable ocrolus-takehome-demo fixtures/edge_cases/unreadable_candidate.json --summary
+uv run --extra test --no-editable ocrolus-takehome-showcase
 ```
 
-These produce `AUTO_ACCEPT`, `FIELD_REVIEW`, `FULL_REVIEW`, and `REJECT`
-respectively.
+The compact output shows `AUTO_ACCEPT`, `FIELD_REVIEW`, `FULL_REVIEW`, and
+`REJECT`, proves that uncertain business values are withheld, summarizes the
+internal task sent to the review desk, and prints the live UI link. Use
+`ocrolus-takehome-demo <fixture> --summary` only when you want to inspect an
+individual scenario.
 
 ## How it works
 
