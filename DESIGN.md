@@ -110,16 +110,45 @@ flowchart TD
 | A1.5 | Storage and hosting foundation | Draft complete; policy inputs open |
 | A2 | File and security validation | Draft complete; policy inputs open |
 | A3 | Rendering and image-quality assessment | Draft complete; tool benchmarks and thresholds open |
-| A4 | Document classification and conditional splitting | Draft in progress; file-boundary fast path locked |
+| A4 | Document classification and conditional splitting | Draft complete; classifier and boundary evaluation open |
 | A5 | Fine-tuned open-weight model extraction | Pipeline sketch complete; production validation and review policy open |
-| A6 | Normalization and typed candidate | Draft complete; prototype alignment with A10 pending |
+| A6 | Normalization and typed candidate | Draft complete; prototype aligned with A10 and production edge policy open |
 | A7 | Sanity checker (deterministic validation) | Draft complete; pay-stub rules implemented and production policy inputs open |
 | A8 | Traffic controller (confidence calibration and routing) | Draft complete; pay-stub router implemented and calibration pending |
 | A9 | Review desk (human correction and revalidation) | Draft complete; UI mock created and production staffing inputs open |
 | A10 | Final typed JSON and delivery | Contract locked and prototype implemented |
-| A11 | Reliability, latency, cost, security, and observability | Not started |
-| A12 | Accuracy evaluation, feedback, and fine-tuning | Not started |
+| A11 | Reliability, latency, cost, security, and observability | Draft complete; production SLO and capacity inputs open |
+| A12 | Accuracy evaluation, feedback, and fine-tuning | Draft complete; statistical and labeling policy inputs open |
 | A13 | Multi-document submission envelope | Backlog |
+
+## Removal criteria and stack reduction
+
+Every component is provisional architecture, not a permanent entitlement to
+exist. Each section must identify when its responsibility can be simplified,
+merged into another component, replaced by a cheaper capability, or removed.
+Removal requires an end-to-end comparison on representative held-out data and
+traffic, continued compliance with accuracy, privacy, security, latency, and
+cost gates, plus a migration and rollback plan. Retired components also require
+cleanup of their data, infrastructure, tests, alerts, dependencies, and
+operational ownership.
+
+| Component | Candidate removal or merge condition | Evidence required before removal |
+| --- | --- | --- |
+| A0 goals | Not removable; revise only when the customer contract changes | Approved replacement SLOs and evaluation definitions |
+| A1 ingress | Merge with an existing intake or API platform when it provides the same authenticated, idempotent upload and stable identifiers | Contract tests, tenant-isolation review, load test, and rollback route |
+| A1.5 storage and hosting | Consolidate stores, queues, or services when a shared platform preserves encryption, immutability, retention, recovery, isolation, and capacity | Security review, recovery test, cost comparison, and SLO canary |
+| A2 file validation | Retire an individual check when an upstream control or sandboxed decoder provably covers the same threat; keep a file-safety boundary somewhere | Adversarial-file regression suite and security sign-off |
+| A3 page preparation | Bypass a correction or the standalone stage when raw inputs produce non-inferior extraction, evidence mapping, latency, and cost | Shadow benchmark across quality and format slices |
+| A4 classification and splitting | Bypass for trusted, single-document typed submissions; merge into A5 only if the model matches classification and boundary quality at lower total cost | Document-type and boundary metrics, novelty slices, and failure rollback |
+| A5 model extraction | Replace a checkpoint, specialist, recovery agent, or serving layer when a challenger wins the full quality-latency-cost gate | Held-out benchmark, shadow traffic, canary, licensing and security review |
+| A6 normalization | Merge into A5 when strict schema output and field, row, column, and label assignment remain equally reliable; retain contract validation somewhere | Property tests, adversarial matching set, and end-to-end accuracy comparison |
+| A7 sanity checker | Remove an individual rule when it has no incremental catch value and its removal does not increase false auto-accepts; retain essential contract checks somewhere | Rule-ablation report, error-slice review, shadow run, and rollback flag |
+| A8 traffic controller | Merge into another service when calibrated, versioned routing and audit behavior are preserved; do not remove the trust gate while extraction errors remain | Calibration, coverage, review-cost, and false-auto-accept comparison |
+| A9 review desk | Remove a review path for a defined cohort only after sustained automatic accuracy and audited samples show it is unnecessary; retain an exception path for unsupported sources | Time-bounded cohort study, random audit, staffing impact, and rapid re-enable plan |
+| A10 delivery | Merge with an existing delivery API when it preserves schema versioning, status-only gating, revisions, idempotency, and auditability | Consumer contract tests, dual delivery, reconciliation, and rollback |
+| A11 operations | Consolidate queues, telemetry, retry, or deployment tooling when platform-native controls meet the same SLO, privacy, recovery, and ownership needs | Failure injection, disaster recovery, load, security, and cost evidence |
+| A12 evaluation and learning | Stop an automated retraining or labeling loop when it produces no measurable quality or cost benefit; never remove independent evaluation and regression gates | Controlled experiments across several release cycles |
+| A13 submission envelope | Remove from the roadmap if customer integrations require only independent document results and no package facts | Confirmed customer contracts and no unresolved package-level use case |
 
 ## A0 - Project-wide success definition
 
@@ -1777,7 +1806,256 @@ number of submitted pay periods and the number in which each earning type was
 observed. Predicting future income or deciding how much income qualifies remains
 outside this extraction contract.
 
-### Backlog: submission envelope
+## A11 - Operations, privacy, reliability, and cost control
+
+### Responsibility and boundary
+
+A11 is the control plane around A1 through A10 rather than another document-
+transforming stage. It owns job state, retries, capacity, deployment safety,
+telemetry, incident response, recovery, privacy controls, and cost attribution.
+It never changes an extracted financial value or converts a technical failure
+into a document-quality or model-confidence decision.
+
+The standard online SLO is p95 under 60 seconds from finalized upload to either
+`COMPLETED_AUTO` or a review-ready `NEEDS_REVIEW` response for a declared
+standard workload. Human queue and completion time use a separate visible SLA.
+Oversized and unsupported inputs must be declared before measurement rather
+than silently removed from the denominator. Exact workload limits, availability,
+recovery, and per-stage budgets require production traffic and customer input.
+
+### Durable execution and failure handling
+
+Each stage consumes an immutable input reference and writes a versioned output
+before acknowledging its queue message. The idempotency key contains the
+`source_artifact_id`, logical stage, and relevant pipeline, model, rules, or
+policy version. A repeated delivery can reuse the completed artifact instead of
+duplicating model inference or reviewer work. State transitions use conditional
+writes so a late worker cannot overwrite a newer revision.
+
+Transient failures such as worker loss, temporary storage errors, or GPU
+unavailability receive capped retries with jitter. Permanent validation,
+unprocessable-source, and review outcomes use their own explicit states and are
+not retried as infrastructure failures. Exhausted jobs enter an internal failure
+queue with a stable reason, attempt history, and operator runbook. Exactly-once
+execution is not claimed; idempotent effects and immutable revisions make
+at-least-once delivery safe.
+
+Originals, page artifacts, candidates, review versions, and delivered results
+use separate retention classes. The immutable source and metadata database are
+recoverable across an availability-zone failure. Backup frequency, regional
+recovery, recovery-point objective, recovery-time objective, and legal hold are
+production policy inputs, not invented values in this take-home.
+
+### Privacy and security controls
+
+All document bytes, rendered pages, evidence, inference, and review remain in a
+company-controlled account and private network. TLS protects transit; managed
+keys encrypt storage; tenant IDs scope every object and metadata access; and
+services receive least-privilege identities. GPU and document workers deny
+unrestricted outbound internet access. Authorized reviewers use time-limited,
+role-scoped access, and administrative or break-glass actions are audited.
+
+Ordinary logs contain identifiers, versions, durations, byte and page counts,
+reason codes, and state transitions, not names, money values, source text, page
+images, or full request bodies. Debug access to sensitive artifacts is separate,
+time-limited, audited, and disabled by default. Retention deletion must remove
+derived copies and review evidence as well as the original, while preserving
+only the minimum non-document audit record that policy allows.
+
+### Observability, capacity, and cost
+
+Every stage emits queue age, attempt count, latency, success and reason codes,
+and version dimensions. End-to-end dashboards report p50/p95/p99 latency,
+automatic completion, review-ready, unprocessable, retry, and failure rates.
+A5 adds GPU utilization, queue wait, token or image workload, batch efficiency,
+and cost. A9 adds review wait, handle time, rework, and reviewer minutes. Cost is
+attributed per completed document and by document type rather than reported as
+an undifferentiated infrastructure total.
+
+CPU workers scale from queue depth and age with bounded concurrency. GPU serving
+uses measured batching and concurrency profiles, reserved baseline capacity for
+the expected load, and controlled burst capacity. Admission control protects
+the SLO from a single oversized submission. A degradation policy may delay low-
+priority work or create a review-ready technical status, but it cannot silently
+route an unprocessed document as low-confidence financial data.
+
+Alerts are based on customer-impacting symptoms such as SLO burn, oldest queue
+age, delivery failures, privacy-control violations, and sudden review or
+unprocessable-rate changes. High-cardinality document IDs remain available for
+trace lookup without becoming metric labels.
+
+### Deployment, versioning, and recovery
+
+Pipeline, model, rendering profile, schema, rules, calibration, and routing
+policy versions are stored with every result. A candidate release first replays
+the frozen regression corpus, then runs in shadow where feasible, then enters a
+bounded canary. Automated rollback triggers on accuracy proxies, error rate,
+latency, review volume, or cost guardrails; manual rollback remains available.
+An in-flight job finishes under a compatible pinned version set or restarts from
+the last durable boundary rather than mixing incompatible contracts.
+
+Quarterly or policy-defined recovery exercises restore representative encrypted
+artifacts and metadata, replay queued work idempotently, and confirm that stale
+webhooks or workers cannot overwrite newer results. Failure-injection tests cover
+worker loss, duplicate messages, storage throttling, GPU loss, database failover,
+review-service interruption, and delivery outages.
+
+### Evaluation plan
+
+Before launch, run production-shaped load tests across typical and maximum
+declared page counts, mixed document types, cold and warm workers, concurrent
+tenants, and realistic review traffic. Report every stage's service and queue
+time, the end-to-end distribution, throughput, saturation point, error and retry
+rates, GPU and CPU usage, storage growth, webhook recovery, and cost per completed
+document. Validate tenant isolation, egress denial, secret handling, log
+redaction, retention deletion, backup restore, and access revocation separately.
+
+A release passes only if it meets accuracy and privacy gates in addition to
+latency, availability, and cost. Adding reviewers or selectively rejecting hard
+documents cannot be used to hide weak automatic performance. Production launch
+starts with SLO monitoring, a capacity margin, on-call ownership, runbooks, and
+a small audited traffic cohort.
+
+### Removal criteria
+
+Queues, telemetry, retry systems, deployment tooling, stores, or backup services
+can be consolidated when a shared platform passes the same load, failure-
+injection, recovery, privacy, audit, and cost tests. Required controls do not
+disappear when tooling is merged. Canary the replacement, preserve rollback and
+data compatibility, then remove superseded infrastructure, copied state,
+credentials, dashboards, alerts, runbooks, dependencies, and ownership.
+
+### Production inputs still required
+
+- Standard and maximum workload definitions, traffic mix, concurrency, and growth
+- Availability target, stage budgets, review SLA, RPO, RTO, and regional policy
+- Retention, legal hold, deletion, encryption-key, and audit requirements
+- GPU fleet and serving profile, reviewer capacity, and cost targets
+- Existing platform, identity, observability, incident, and delivery standards
+
+## A12 - Accuracy evaluation, feedback, and fine-tuning
+
+### Dataset boundaries and ground truth
+
+The million-plus labeled examples are divided by source artifact and application
+so pages or repeated submissions from one customer cannot leak across splits.
+Where possible, employer or institution template families and a recent time-
+based holdout are also isolated to test unseen formats and drift. The system
+maintains four distinct pools:
+
+1. **Training:** examples available to fine-tune the extraction model.
+2. **Calibration:** examples used to map raw scores to observed correctness and
+   choose A8 thresholds and review policy.
+3. **Untouched test:** examples used once per frozen release candidate for the
+   final quality, latency, review, and cost decision.
+4. **Production audit:** randomly sampled automatic results plus reviewed cases
+   used to detect live drift without silently becoming the test set.
+
+Labels carry the source digest, schema version, field path, normalized value,
+source evidence, annotator provenance, and adjudication status. Critical fields
+and disagreements receive independent verification under a defined QA policy.
+Corrections with unresolved evidence, stale schemas, or reviewer-quality failures
+remain quarantined rather than entering training or golden data.
+
+### Metrics and the 99% target
+
+The primary metric remains A0 customer field accuracy: correct final field
+instances divided by expected field instances after required normalization and
+human review. Wrong, missing, malformed, misassigned, and unsupported extra
+values are errors. Repeated line-item cells count individually. The report shows
+overall accuracy and slices by document type, critical field family, template
+familiarity, image quality, document length, model path, and automatic-versus-
+reviewed outcome, with sample counts and confidence intervals.
+
+Automatic field accuracy, false automatic accepts, straight-through coverage,
+successful completion, review and rejection rates, reviewer corrections and
+minutes, p50/p95 latency, and cost per completed document are separate release
+gates. This prevents review or selective rejection from hiding poor automation.
+The project makes no 99% claim until the complete frozen pipeline passes the
+untouched test set under the agreed statistical rule.
+
+### Confidence calibration and policy evaluation
+
+Raw model scores are not treated as probabilities. Calibration is measured by
+field family and relevant document slices using reliability curves, expected
+calibration error, Brier score where applicable, and correctness at candidate
+routing thresholds. Sparse slices fall back to a broader calibrated group or
+review; they do not receive invented precision.
+
+A8 policy search happens only on the calibration pool. Candidate policies must
+meet critical-field false-auto-accept budgets and the final accuracy and latency
+gates before comparing completion and cost. The selected policy is frozen before
+the untouched test run. A random audit of automatic accepts continues after
+launch so feedback is not limited to cases the policy already considered hard.
+
+### Correction and learning loop
+
+A9 corrections first create immutable audit events and corrected candidate
+revisions. They pass schema checks, A7 revalidation, reviewer-quality gates, and
+evidence verification before becoming labeled-data candidates. Approved
+examples enter a versioned dataset snapshot after retention and permitted-use
+checks; they never update a live model or threshold directly.
+
+Training selection balances common traffic with high-impact error slices,
+novel templates, image-quality failures, and audited automatic mistakes. It
+avoids repeatedly oversampling review traffic in a way that would distort the
+production distribution. Fine-tuning starts from the selected open-weight
+baseline and compares parameter-efficient and fuller updates based on measured
+accuracy, training cost, serving compatibility, and regression risk. Training
+configuration, code, base checkpoint, data manifest, and random seeds are
+versioned for reproducibility.
+
+### Release and drift loop
+
+Each candidate model, calibration map, rule catalog, and routing policy is
+evaluated as one pinned pipeline version against the current production baseline.
+Promotion requires the frozen offline gates, security and licensing review,
+shadow traffic where source use permits, and a bounded canary. The last known-
+good version remains deployable. Rollback is triggered by customer-impacting
+errors, calibration drift, latency, failure, review, rejection, or cost guardrails.
+
+Production monitoring compares field and reason distributions, template novelty,
+image quality, confidence reliability, audited accuracy, correction patterns,
+review rate, and cost with the release baseline. Drift opens an investigation
+and targeted evaluation slice; it does not automatically trigger training.
+Retraining is evidence-triggered and promoted only if it improves the full
+system rather than a single benchmark.
+
+### Evaluation plan
+
+Audit split leakage, label agreement, adjudication, evidence alignment, schema
+compatibility, and dataset lineage before training. For every candidate, publish
+a reproducible model card and evaluation report containing slice counts,
+confidence intervals, paired comparison with baseline, critical failures,
+calibration, latency on intended hardware, GPU use, review impact, and total
+cost. Replay known incidents and difficult edge cases in addition to the frozen
+representative set.
+
+After launch, compare shadow or canary decisions with the baseline, manually
+audit a random sample of automatic completions, and measure reviewer accuracy so
+human corrections are not assumed perfect. Promotion authority, minimum sample
+sizes, acceptable confidence bounds, and rollback thresholds remain production
+policy decisions.
+
+### Removal criteria
+
+An automated labeling, active-learning, retraining, or fine-tuning step can be
+removed when controlled experiments across several release cycles show no
+measurable accuracy, review, latency, or cost benefit. Independent held-out
+evaluation, production audit sampling, dataset lineage, and regression gates are
+never removed. Preserve the last known-good artifacts and rollback path, then
+delete unused jobs, schedules, derived datasets subject to retention policy,
+compute reservations, alerts, dependencies, and ownership.
+
+### Production inputs still required
+
+- Exact customer accuracy unit, critical-field list, and false-accept budgets
+- Minimum sample sizes, confidence intervals, and promotion authority
+- Labeling, adjudication, reviewer-audit, and permitted-training-use policy
+- Dataset retention, deletion, lineage, and template-isolation rules
+- Retraining triggers, compute budget, canary size, and rollback thresholds
+
+## A13 - Submission envelope (backlog)
 
 The current schema is the atomic result for one logical pay stub. A production
 submission may contain several pay stubs, W-2s, and bank statements. A future
@@ -1785,17 +2063,19 @@ submission-level envelope will group those document results and track both
 package-level and per-document status. It may report factual cross-document
 observations, but it will not annualize income or apply underwriting policy.
 
-## Working order
+### Removal criteria
 
-The final document will follow the `A0` through `A13` reference map. During
-design, sections can be handled as separate sessions in whichever order is most
-useful. Working backward from the locked output suggests this sequence:
+This item can be removed from the roadmap if confirmed customer contracts need
+only independent document results and no package-level facts or coordination.
+Record the evidence so the envelope is not repeatedly redesigned, then remove
+unused draft contracts, tests, diagrams, and ownership.
 
-1. A9: Review desk
-2. A8: Traffic controller
-3. A7: Sanity checker
-4. A6: Normalization and typed candidate
-5. A5: Model extraction
-6. A4 through A1: Classification back to ingress
-7. A11 and A12: Operations, evaluation, and learning
-8. A0: Confirm the complete design against the brief's constraints
+## Design maintenance
+
+A0 through A12 now have complete first drafts; A13 remains an explicit backlog
+item. Future section sessions should update the matching overview text, removal
+criteria, decision-log entry, production inputs, and evaluation plan together.
+Before submission, the final cross-document review must confirm that stage
+contracts, state names, SLO boundaries, versions, and open decisions agree
+across this design, `SYSTEM_OVERVIEW.md`, `PROJECT_PLAN.md`, `WRITEUP.md`, the
+prototype, and the JSON Schema.

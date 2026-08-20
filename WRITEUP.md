@@ -85,6 +85,14 @@ lender could mistakenly consume those fields. The lender-facing contract
 therefore returns status only until the result is complete, while the richer
 audit record remains inside the controlled environment.
 
+I also treated every production component as removable rather than permanent.
+The design states what evidence would allow a stage, rule, model path, review
+route, or infrastructure service to be merged or retired without weakening the
+end-to-end gates. Removal includes deleting its state, alerts, dependencies, and
+ownership, with a rollback path if the controlled comparison was misleading.
+This adds some evaluation work up front but limits long-term stack size and
+technical debt.
+
 ## What I would do differently with more time or a full team
 
 My next step would be to connect this contract to a real self-hosted extractor

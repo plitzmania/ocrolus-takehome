@@ -133,6 +133,15 @@ The public-facing services control access, but document storage, processing,
 model inference, and review evidence remain inside the company environment. The
 model workers do not send customer documents to public model APIs.
 
+#### Removal criteria
+
+Individual stores, queues, or hosting services can be consolidated when a
+shared company platform preserves tenant isolation, encryption, immutability,
+retention, recovery, capacity, and the under-60-second path at lower total cost.
+The replacement must pass security, recovery, load, and canary tests with a
+rollback route. Retirement also removes old data copies, credentials,
+infrastructure, alerts, dependencies, and ownership.
+
 ### Zoom: page preparation through extraction
 
 ```mermaid
@@ -248,6 +257,14 @@ application servers. This keeps intake short and limits compute cost. Storage
 cost grows with document volume and retention time, so the final retention
 period still needs a business and compliance decision.
 
+### Removal criteria
+
+This separate intake layer can merge into an existing company upload service
+once that service provides the same authenticated, idempotent uploads, stable
+IDs, private quarantine boundary, and audit trail. The change needs contract,
+load, and tenant-isolation tests plus a rollback route. Removal also deletes the
+old endpoint, credentials, alerts, storage prefixes, tests, and ownership.
+
 ## 2. Make sure the file is safe to open
 
 ### What it is
@@ -271,6 +288,14 @@ extraction model. Rejecting an unusable file here avoids paying to render it or
 send it to a GPU. The current technical draft gives upload finalization and file
 validation a combined initial budget of five seconds at p95, but that budget has
 not yet been measured under load.
+
+### Removal criteria
+
+An individual safety check can be removed only when an upstream control or a
+sandboxed decoder demonstrably covers the same threat on the adversarial-file
+test set. The system must retain a file-safety boundary somewhere. Security
+sign-off, a shadow comparison, rollback, and cleanup of obsolete scanners,
+rules, alerts, and dependencies are required.
 
 ## 3. Prepare each page and check its quality
 
@@ -312,6 +337,14 @@ makes the extraction model slower and more expensive. Catching blank or unusable
 pages here prevents wasted model work. The exact rendering settings and time
 budget are not yet chosen.
 
+### Removal criteria
+
+A correction or tool can be removed when raw pages perform just as well on
+field accuracy, evidence mapping, latency, and total cost across representative
+quality and format slices. The whole stage can be merged only if the replacement
+still produces safe, traceable model inputs. Use a shadow benchmark, keep a
+fast rollback, and remove obsolete page artifacts, workers, queues, and alerts.
+
 ## 4. Identify documents and split only when necessary
 
 ### What it is
@@ -342,6 +375,14 @@ or page group. A small specialized classifier would generally cost less than
 using the full extraction model for every page, while sharing a model could
 simplify the system. The technical design has not yet chosen the classifier or
 assigned this stage a time budget.
+
+### Removal criteria
+
+Classification and splitting can be bypassed for a trusted input contract that
+guarantees one declared document per file. The standalone stage can merge into
+extraction only when the replacement matches document-type, boundary, unknown-
+format, latency, and cost results. A controlled comparison and rollback must
+precede retirement of its models, queues, metadata, tests, and monitoring.
 
 ## 5. Read the document
 
@@ -432,6 +473,15 @@ production-like hardware. Once live, the system continues checking whether real
 formats, costs, review rates, and latency match those assumptions; production
 evidence can trigger another controlled model comparison.
 
+### Removal criteria
+
+The extraction capability remains necessary, but a checkpoint, specialist,
+recovery path, or serving layer can be replaced or removed when a simpler
+challenger wins the held-out accuracy, latency, total-cost, licensing, and
+operability gates. Promotion uses shadow traffic and a canary with rollback;
+retirement includes weights, endpoints, GPU reservations, prompts, evaluation
+fixtures, alerts, and ownership that no longer serve the winning path.
+
 ## 6. Turn the reading into clean, typed values
 
 ### What it is
@@ -450,6 +500,14 @@ unfamiliar deduction labels are kept instead of discarded.
 Normalization is lightweight CPU work, so its direct cost should be small. Its
 larger benefit is avoiding downstream cleanup and making the validation rules
 dependable.
+
+### Removal criteria
+
+The standalone normalizer can merge into extraction when strict typed output
+and field, row, column, and label assignment remain equally reliable on the
+adversarial matching set. Schema validation must still exist at a boundary.
+Property tests, a shadow comparison, rollback, and deletion of redundant code,
+schemas, queues, alerts, and ownership are required.
 
 ## 7. Sanity checker
 
@@ -492,6 +550,14 @@ aggressive create unnecessary review time, so evaluation measures false alarms,
 reviewer minutes, and incorrect fields that pass the rules as well as compute
 cost. These checks contribute to the 99%+ goal but cannot establish it by
 themselves.
+
+### Removal criteria
+
+An individual rule can be retired when ablation shows it catches no unique
+errors and its removal does not increase false automatic acceptance or reviewer
+work on any important slice. Essential contract and arithmetic checks must
+remain somewhere. Run the candidate policy in shadow mode, retain a rollback
+flag, and delete the retired rule's tests, metrics, alerts, and documentation.
 
 ## 8. Traffic controller
 
@@ -544,6 +610,14 @@ Each policy version is therefore evaluated on final and automatic accuracy,
 review volume, latency, and total cost rather than confidence alone. The actual
 thresholds remain open until those measurements exist.
 
+### Removal criteria
+
+The controller can merge into another service only when that service preserves
+calibrated field-level decisions, policy versioning, audit reasons, completion
+coverage, and cost accounting. The trust gate cannot disappear while extraction
+errors remain possible. Compare false auto-accepts and review cost in shadow,
+canary the change, and retire duplicate policies, metrics, and ownership.
+
 ## 9. Review desk
 
 ### What it is
@@ -592,6 +666,15 @@ need cannot be promised away. Review completion is separate from the
 under-60-second automatic or review-ready target; staffing, turnaround time, and
 acceptable review rate still need product decisions.
 
+### Removal criteria
+
+A review path may be removed for a precisely defined document cohort only after
+sustained automatic accuracy and random audits show that people no longer add
+value there. An exception or resubmission path remains for unsupported sources.
+Use a time-bounded cohort study and rapid re-enable plan, then remove the unused
+queue, UI path, staffing workflow, alerts, and access grants while retaining
+required audit history.
+
 ## 10. Deliver the result
 
 ### What it is
@@ -627,6 +710,14 @@ results without claiming unrealistic exactly-once delivery. The main ongoing
 costs are secure storage, delivery traffic, and keeping enough internal audit
 information to explain a result.
 
+### Removal criteria
+
+Delivery can merge into an existing API when it preserves schema versions,
+status-only gating, immutable revisions, idempotent notifications, authenticated
+retrieval, and auditability. Validate with consumer contract tests and dual
+delivery before cutover. Rollback must be immediate, followed by removal of the
+old endpoint, credentials, retry state, alerts, and ownership.
+
 ## 11. Keep the service reliable and private
 
 ### What it is
@@ -636,6 +727,15 @@ processing time, model errors, review rates, and cost. Logs should contain IDs,
 durations, and reason codes rather than customer document contents. Model
 workers and private storage should not have unrestricted access to the public
 internet.
+
+Each stage saves a versioned result before marking its queued work complete, so
+a retry can reuse finished work instead of charging for the same extraction or
+review twice. Temporary failures receive a limited retry; permanent document
+problems, review outcomes, and exhausted technical jobs remain distinct states.
+Model, rules, routing, and schema releases are tested offline, compared in
+shadow where possible, and introduced to a small traffic group with rollback.
+Backups and recovery exercises verify that originals, metadata, and immutable
+result revisions can be restored without an old worker overwriting newer work.
 
 ### Why it is important
 
@@ -650,6 +750,14 @@ availability targets. GPU capacity is likely to be the largest online compute
 cost. The technical design still needs concrete traffic assumptions, recovery
 goals, and cost targets before sizing the system.
 
+### Removal criteria
+
+Queues, telemetry, retry systems, deployment tooling, or backup services can be
+consolidated when a shared platform passes the same load, failure-injection,
+recovery, privacy, and cost tests. Required reliability and privacy controls do
+not disappear. Canary the shared path, retain rollback, and remove superseded
+infrastructure, dashboards, alerts, runbooks, dependencies, and access grants.
+
 ## 12. Measure accuracy and improve the system
 
 ### What it is
@@ -660,18 +768,40 @@ a held-out golden dataset, not assumed from a model name or a few examples.
 Automatic accuracy before review is tracked as a leading indicator, alongside
 review volume, corrections, rejections, and review time.
 
+Training examples, confidence-calibration examples, and the untouched release
+test set are separate, with related documents kept together so the same source
+cannot leak into both training and testing. A random sample of automatically
+accepted production results is also checked because reviewer corrections alone
+show only cases the system already considered difficult.
+
 ### Why it is important
 
 Reviewed corrections can improve future training data, but they should be
 checked before use. A new model or policy should replace the current version
 only after it passes the agreed accuracy, latency, and cost gates.
 
+Corrections are quarantined until their evidence and reviewer quality are
+verified. A candidate model, its confidence calibration, the sanity-check rules,
+and routing policy are released as one compatible version. Drift starts an
+investigation and targeted evaluation; it does not update a live model
+automatically.
+
 ### Cost and speed impact
 
 Evaluation and fine-tuning are offline costs rather than work added to every
 document request. Training can be expensive, but better models and thresholds
 can reduce repeated extraction failures and human-review cost. The retraining
-schedule and promotion gates are not yet designed.
+triggers, statistical promotion thresholds, and release authority still need
+production data and policy decisions.
+
+### Removal criteria
+
+An automated labeling, retraining, or fine-tuning step can stop when controlled
+experiments across several release cycles show no measurable accuracy, review,
+or cost benefit. Independent evaluation, golden data, and regression gates are
+never removed. Preserve the last known-good release and rollback path, then
+delete unused jobs, derived datasets subject to retention policy, schedules,
+alerts, dependencies, and ownership.
 
 ## Future: return one package-level result
 
@@ -694,3 +824,10 @@ changing their meaning.
 Grouping existing document results should add modest coordination and storage
 work. The main cost still comes from processing each document inside the
 package. Package-level timing rules have not yet been defined.
+
+### Removal criteria
+
+This backlog item can be dropped if confirmed customer contracts require only
+independent document results and no package-level facts or coordination. Record
+that decision with the customer evidence so the envelope is not repeatedly
+redesigned, and remove unused draft schemas, tests, diagrams, and ownership.

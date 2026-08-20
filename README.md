@@ -171,6 +171,8 @@ DESIGN.md                full production pipeline design
 SYSTEM_OVERVIEW.md       plain-English production system overview
 WRITEUP.md               scope, trade-offs, and production questions
 DECISION_LOG.md          explicit design decisions and open assumptions
+QA_CHECKLIST.md          clean-checkout, browser, CI, and private-Git handoff
+QA_REPORT.md             latest local automated and browser QA evidence
 ```
 
 ## Deliberate boundary
@@ -182,3 +184,18 @@ queue, persistence, concurrency control, or real document backend. It is a
 functional demonstration of the contract and workflow, not a production
 application. That boundary keeps the prototype honest and testable within the
 stated time budget.
+
+Before sharing or deploying the prototypes, complete
+[`QA_CHECKLIST.md`](QA_CHECKLIST.md). The latest local readiness evidence is in
+[`QA_REPORT.md`](QA_REPORT.md). The repository is prepared for a future private
+remote, but no remote, public repository, or new deployment should be created
+until ownership, visibility, and access are explicitly confirmed.
+
+## Designing for removal
+
+Every production component in [`DESIGN.md`](DESIGN.md#removal-criteria-and-stack-reduction)
+has criteria for when it can be simplified, merged, replaced, or removed. A
+change must preserve end-to-end accuracy, privacy, security, latency, and cost
+goals and include both rollback and cleanup. This prevents temporary safety
+layers, model paths, and infrastructure choices from becoming permanent
+technical debt merely because they already exist.

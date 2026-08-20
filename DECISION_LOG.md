@@ -361,6 +361,65 @@ Status meanings:
   integration standard dictates another transport, or measured review latency
   justifies a more granular contract without weakening the accuracy boundary.
 
+## D-019 - Give every component measurable removal criteria
+
+- **Status:** Accepted
+- **Recorded:** 2026-08-19
+- **Decision:** Every pipeline component must state when it can be simplified,
+  merged, replaced, or removed; what end-to-end evidence is required; how it is
+  migrated and rolled back; and which infrastructure, data, tests, alerts,
+  dependencies, and ownership are deleted afterward.
+- **Why:** Early safety layers and architecture choices can otherwise become
+  permanent technical debt even after another component covers their job.
+- **Guardrail:** Removal must preserve the system's accuracy, privacy, security,
+  latency, cost, and audit requirements on representative held-out data and
+  traffic. Independent evaluation remains even when an automated learning step
+  is removed.
+- **Tradeoff:** Maintaining ablation tests and reversible boundaries adds near-
+  term work, but it makes the production stack easier to simplify safely.
+- **Revisit when:** The company adopts a stronger organization-wide
+  decommissioning standard that subsumes this requirement.
+
+## D-020 - Use durable idempotent stage boundaries instead of claiming exactly-once execution
+
+- **Status:** Accepted
+- **Recorded:** 2026-08-19
+- **Decision:** Each stage writes an immutable, versioned result before
+  acknowledging queued work. At-least-once delivery, conditional state changes,
+  bounded retries, and idempotency keys make duplicate execution safe. Permanent
+  document outcomes remain separate from exhausted technical jobs.
+- **Why:** Queue and worker failures are normal distributed-system behavior.
+  Exactly-once execution across storage, models, review, and delivery would be a
+  misleading claim and could duplicate expensive GPU or human work.
+- **Tradeoff:** Durable boundaries add state and compatibility management, but
+  provide replay, recovery, and auditable failure handling.
+- **Removal criteria:** A standalone queue or state service may merge into a
+  shared platform after failure-injection, recovery, privacy, load, and cost
+  tests prove equivalent behavior and rollback remains available.
+- **Revisit when:** The company platform supplies a stronger established job
+  contract that preserves these invariants.
+
+## D-021 - Separate training, calibration, release testing, and production audit data
+
+- **Status:** Accepted
+- **Recorded:** 2026-08-19
+- **Decision:** Keep model-training data, A8 calibration data, an untouched
+  release test set, and production audit samples separate by source artifact and
+  application, with template-family and time isolation where practical.
+  Reviewer corrections enter learning only after evidence, schema, reviewer-
+  quality, retention, and lineage checks.
+- **Why:** Reusing calibration or related documents for final testing inflates
+  accuracy. Learning only from reviewed cases also misses errors that were
+  automatically accepted.
+- **Tradeoff:** Strict splits and label QA reduce immediately available training
+  volume and add offline work, but make the 99% claim and model comparisons
+  credible.
+- **Removal criteria:** Automated retraining or active-learning steps may stop
+  after several controlled cycles show no measurable value. Independent test,
+  audit, lineage, regression, and rollback controls remain.
+- **Revisit when:** The evaluation owner approves a statistically stronger split
+  or continuous-evaluation design with equivalent leakage protection.
+
 ## Open decisions
 
 These are not decisions yet and should not be presented as settled in Part C:

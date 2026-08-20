@@ -1,7 +1,8 @@
 # Ocrolus Take-Home Project
 
-Status: Part B prototype and submission write-up implemented. Production design
-sections and final requirement review are still in progress.
+Status: Part B prototype and all A0-A12 production-design sections are drafted.
+The automated readiness suite and initial desktop/mobile browser smoke test
+pass. Final human review, clean-checkout CI, and private publication remain.
 
 ## Current implementation status
 
@@ -23,16 +24,21 @@ Implemented:
 - Part C prototype write-up
 - Reproducible dependency lock and GitHub Actions test workflow
 - Interactive review-desk frontend wired to the Python A9 review-task contract
+- Component-by-component removal criteria for reducing stack size and technical debt
+- A11 operations, privacy, reliability, observability, and cost-control design
+- A12 evaluation, correction feedback, fine-tuning, drift, and release design
 
 Still pending:
 
-- Remaining `DESIGN.md` pipeline, operations, and evaluation sections; A1
-  through A9 are drafted with production policy inputs still open
+- Production policy inputs that require customer traffic, security, retention,
+  reviewer, statistical, recovery, and cost decisions
 - Backlog: add a submission-level envelope that groups multiple logical document
   results, tracks package and per-document status, and optionally reports factual
   cross-document observations without annualizing income or applying underwriting
   policy
 - Final requirement-by-requirement review
+- Complete the remaining human checks in the repository QA checklist: clean
+  checkout, 1024/768/320 px, light appearance, and keyboard-only review
 - GitHub publication after the repository owner and visibility are confirmed
 
 ## Objective
@@ -242,6 +248,65 @@ being silently overridden.
 - Test tenant isolation, evidence alignment, accessibility, bounded review
   loops, revalidation, load, access revocation, and sensitive-data logging.
 
+## A11 operations and reliability plan
+
+### Scope and accepted direction
+
+A11 surrounds the online pipeline with durable, idempotent stage execution,
+bounded retries, immutable revisions, privacy controls, capacity management,
+observability, incident handling, deployment safety, backup, and recovery. It
+does not alter financial facts or convert technical failures into confidence
+decisions. The standard online SLO remains p95 under 60 seconds from finalized
+upload to an automatic result or review-ready status; human completion has a
+separate visible SLA.
+
+Every result records the compatible pipeline, model, render, schema, rules,
+calibration, and routing versions. Candidate releases pass offline regression,
+shadow comparison where feasible, and a bounded canary with rollback. Logs use
+IDs, timings, versions, and reason codes rather than customer values or images.
+
+### Remaining production inputs and evidence
+
+- Confirm traffic, workload, concurrency, availability, stage budgets, RPO,
+  RTO, regional, retention, legal-hold, deletion, and cost targets.
+- Load-test mixed document traffic and review work; report queue, stage, and
+  end-to-end latency, saturation, retries, failures, resource use, and cost.
+- Test duplicate delivery, worker loss, storage and GPU failure, database
+  failover, webhook outage, backup restore, tenant isolation, egress denial,
+  log redaction, access revocation, and retention deletion.
+- Consolidate infrastructure only after shared replacements pass the same load,
+  recovery, privacy, audit, and cost gates with rollback and full cleanup.
+
+## A12 evaluation and learning plan
+
+### Scope and accepted direction
+
+A12 keeps training, confidence calibration, untouched release testing, and
+production audit data separate by source artifact and application, with
+template-family and time isolation where possible. The 99% target is final
+customer field accuracy measured end to end; automatic accuracy, false accepts,
+coverage, review, rejection, latency, and cost remain separate gates.
+
+Reviewer corrections become training candidates only after schema validation,
+A7 revalidation, evidence checks, reviewer-quality gates, retention checks, and
+versioned dataset inclusion. They never update a live model or policy directly.
+Each pinned model, calibration, rule, and routing bundle must beat the current
+baseline offline, then pass shadow and canary gates with rollback.
+
+### Remaining production inputs and evidence
+
+- Confirm the field-accuracy unit, critical-field false-accept budgets, minimum
+  sample sizes, confidence intervals, promotion authority, and rollback gates.
+- Define labeling, adjudication, reviewer audit, permitted training use,
+  lineage, retention, deletion, and template-isolation policy.
+- Publish reproducible release reports with slice counts, confidence intervals,
+  paired baseline comparisons, calibration, hardware latency, review impact,
+  and total cost.
+- Audit random automatic completions to prevent selective-label bias and use
+  drift evidence, not a schedule alone, to trigger retraining investigations.
+- Remove automated learning steps that show no measured benefit across several
+  cycles; retain independent evaluation, lineage, audit sampling, and rollback.
+
 ## Model recommendation
 
 Recommend Qwen3-VL-8B-Instruct as the initial self-hosted baseline, subject to evaluation against larger Qwen variants, Gemma, and appropriate Mistral vision models.
@@ -326,3 +391,5 @@ ocrolus-takehome/
 - No secrets or unnecessary sensitive data are included
 - The system design is implementable by an engineer
 - A separate defense sheet explains every major decision
+- Every system component has measurable removal or merge criteria, required
+  proof, cleanup scope, and a rollback path
