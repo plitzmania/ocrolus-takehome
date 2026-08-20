@@ -16,7 +16,7 @@ def test_showcase_summarizes_routes_safety_and_ui_handoff():
     assert "Suspicious values in lender response: NO — correctly withheld" in output
     assert "Flagged fields: 3" in output
     assert "Contract: Python task exactly matches" in output
-    assert "ocrolus-review-desk.benteplitzky15.chatgpt.site" in output
+    assert "chatgpt.site" not in output
 
 
 def test_showcase_payload_matches_the_frontend_fixture():

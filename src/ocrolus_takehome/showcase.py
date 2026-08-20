@@ -113,7 +113,6 @@ def build_showcase_payload(root: Path) -> Dict[str, Any]:
             "routing.py",
             "result.py / review.py",
         ],
-        "live_url": "https://ocrolus-review-desk.benteplitzky15.chatgpt.site",
     }
 
 
@@ -148,9 +147,6 @@ def build_showcase(root: Path) -> str:
             "",
             "CODE PATH",
             f"  {' → '.join(payload['code_path'])}",
-            "",
-            "LIVE REVIEW DESK",
-            f"  {payload['live_url']}",
         ]
     )
     return "\n".join(lines)

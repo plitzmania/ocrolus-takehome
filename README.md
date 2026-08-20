@@ -7,6 +7,8 @@ needs human attention.
 
 For a recipient-ready setup and usage guide, start with
 [`HANDOFF.md`](HANDOFF.md).
+Parts A and C are linked from the
+[submission directory](https://docs.google.com/document/d/1vY05eTzC16V8VOTYStIKH9Ir94Ef6nXYgahRm8NJFic/edit).
 
 The prototype deliberately starts **after** OCR/model extraction. Synthetic
 JSON fixtures stand in for the typed output of an upstream model. The code
@@ -58,11 +60,6 @@ npm ci
 npm run dev
 ```
 
-Or open the privately hosted prototype at
-[ocrolus-review-desk.benteplitzky15.chatgpt.site](https://ocrolus-review-desk.benteplitzky15.chatgpt.site).
-Use **Backend demo** for the routing and safety walkthrough, then switch to
-**Reviewer workflow** for the human-review interaction.
-
 Omit `--summary` to print the lender-facing, delivery-gated response. An
 auto-accepted fixture includes the completed business data; every review route
 returns status only:
@@ -79,9 +76,21 @@ uv run --extra test --no-editable ocrolus-takehome-showcase
 
 The compact output shows `AUTO_ACCEPT`, `FIELD_REVIEW`, `FULL_REVIEW`, and
 `REJECT`, proves that uncertain business values are withheld, summarizes the
-internal task sent to the review desk, and prints the live UI link. Use
+internal task sent to the review desk. Use
 `ocrolus-takehome-demo <fixture> --summary` only when you want to inspect an
 individual scenario.
+
+To run the supplied assignment pay stub through the same component:
+
+```bash
+uv run --extra test --no-editable ocrolus-takehome-demo \
+  fixtures/supplied_paystub_candidate.json --summary
+```
+
+That fixture is an explicit manual transcription, not claimed OCR or model
+output. It preserves the printed line items, omits the full Social Security
+number, leaves unprinted pay frequency null, and routes the two suspicious YTD
+deductions to review.
 
 ## How it works
 
@@ -111,6 +120,7 @@ Deterministic checks cover:
 - current and YTD deduction line-item totals
 - current and YTD gross-minus-deductions-to-net equations
 - suspicious line items whose YTD amount is lower than the current amount
+- nonzero gross or deduction totals with no extracted line items
 
 The confidence policy uses field-level values rather than only an overall
 average. This prevents many high-confidence fields from hiding one weak
@@ -126,9 +136,8 @@ Python router. The interface is an exception path designed to minimize
 full-document human work, not a claim that review will never be needed.
 
 The UI is explicitly in simulation mode: interactions are local and nothing is
-stored. The repository-owned static preview remains embedded in
-[`SYSTEM_OVERVIEW.md`](SYSTEM_OVERVIEW.md#9-review-desk) for reviewers who do not
-run the web app.
+stored. A repository-owned static preview is available at
+[`mockups/review-desk.png`](mockups/review-desk.png).
 
 ## Simulated input
 
@@ -147,9 +156,16 @@ its confidence, and optional page evidence:
 }
 ```
 
-The fixtures are explicitly labeled `simulated_upstream_output`. Their
-confidence values are test inputs, not measured model probabilities. The code
+Synthetic fixtures are explicitly labeled `simulated_upstream_output`. The
+supplied-stub fixture is labeled `manual_transcription_of_supplied_paystub`.
+All confidence values are test inputs, not measured probabilities. The code
 does not claim to perform OCR, model inference, or confidence calibration.
+
+The prototype requires a well-formed typed candidate: ISO dates and monetary
+values with no more than two decimal places. Invalid candidate syntax fails at
+the input boundary. The production design is broader: normalization would
+retain an otherwise usable candidate while marking an individual unparseable
+field as null with an issue for review.
 
 ## Output contract
 
@@ -176,12 +192,6 @@ schemas/                final pay-stub JSON Schema
 tests/                  unit, routing, CLI, and schema-contract tests
 review-desk-site/        interactive reviewer UI wired to an internal task
 mockups/                 repository-native reviewer preview
-DESIGN.md                full production pipeline design
-SYSTEM_OVERVIEW.md       plain-English production system overview
-WRITEUP.md               scope, trade-offs, and production questions
-DECISION_LOG.md          explicit design decisions and open assumptions
-QA_CHECKLIST.md          clean-checkout, browser, CI, and private-Git handoff
-QA_REPORT.md             latest local automated and browser QA evidence
 ```
 
 ## Deliberate boundary
@@ -193,18 +203,3 @@ queue, persistence, concurrency control, or real document backend. It is a
 functional demonstration of the contract and workflow, not a production
 application. That boundary keeps the prototype honest and testable within the
 stated time budget.
-
-Before sharing or deploying the prototypes, complete
-[`QA_CHECKLIST.md`](QA_CHECKLIST.md). The latest local readiness evidence is in
-[`QA_REPORT.md`](QA_REPORT.md). The repository is prepared for a future private
-remote, but no remote, public repository, or new deployment should be created
-until ownership, visibility, and access are explicitly confirmed.
-
-## Designing for removal
-
-Every production component in [`DESIGN.md`](DESIGN.md#removal-criteria-and-stack-reduction)
-has criteria for when it can be simplified, merged, replaced, or removed. A
-change must preserve end-to-end accuracy, privacy, security, latency, and cost
-goals and include both rollback and cleanup. This prevents temporary safety
-layers, model paths, and infrastructure choices from becoming permanent
-technical debt merely because they already exist.

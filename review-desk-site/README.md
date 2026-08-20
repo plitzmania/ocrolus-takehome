@@ -32,10 +32,7 @@ npm run lint
 npm test
 ```
 
-`npm test` builds the production worker and checks its rendered HTML. The root
-[`QA_CHECKLIST.md`](../QA_CHECKLIST.md) contains the full responsive,
-interaction, accessibility, and private-repository handoff pass. The latest
-local run is recorded in [`QA_REPORT.md`](../QA_REPORT.md).
+`npm test` builds the production worker and checks its rendered HTML.
 
 This is a product-design prototype, not a production review system. It does not
 store submitted values or process real documents. Save, revalidation, and

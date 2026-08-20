@@ -20,7 +20,7 @@
       "start": "2026-07-01",
       "end": "2026-07-15",
       "pay_date": "2026-07-18",
-      "frequency": "bi_weekly"
+      "frequency": "semi_monthly"
     },
     "compensation_rate": {
       "basis": null,
@@ -162,7 +162,7 @@
     },
     {
       "path": "/pay_period/frequency",
-      "value": "bi_weekly",
+      "value": "semi_monthly",
       "confidence": 0.99,
       "source": "simulated",
       "review_required": false,

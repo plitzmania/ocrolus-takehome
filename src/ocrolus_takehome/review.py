@@ -150,11 +150,10 @@ def build_review_task(
                 "path": candidate_path_to_pointer(path),
                 "value": field.to_dict()["value"],
                 "confidence": field.confidence if field.value is not None else None,
-                "source": (
-                    "simulated"
-                    if candidate.source == "simulated_upstream_output"
-                    else "model"
-                ),
+                "source": {
+                    "simulated_upstream_output": "simulated",
+                    "manual_transcription_of_supplied_paystub": "manual",
+                }.get(candidate.source, "model"),
                 "review_required": path in review_paths,
                 "evidence": _evidence(field.evidence),
             }

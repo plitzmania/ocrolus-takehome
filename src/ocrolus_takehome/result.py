@@ -168,8 +168,9 @@ def build_result(
         "document_type": "pay_stub",
         "processing_status": status,
         "confidence_score": (
-            decision.confidence.average_confidence
+            round(decision.confidence.average_confidence, 6)
             if decision.action == RoutingAction.AUTO_ACCEPT
+            and decision.confidence.average_confidence is not None
             else None
         ),
         "extraction_method": candidate.source,

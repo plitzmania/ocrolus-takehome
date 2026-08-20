@@ -23,6 +23,19 @@ def test_suspicious_ytd_value_triggers_field_review():
     assert "deductions[0].year_to_date_amount" in decision.review_fields
 
 
+def test_supplied_paystub_routes_to_full_review_for_four_suspicious_fields():
+    candidate = PayStubCandidate.from_json_file(
+        ROOT / "fixtures" / "supplied_paystub_candidate.json"
+    )
+
+    decision = route_candidate(candidate)
+
+    assert decision.action == RoutingAction.FULL_REVIEW
+    assert "TOO_MANY_FIELDS_REQUIRE_REVIEW" in decision.reasons
+    assert "deductions[1].year_to_date_amount" in decision.review_fields
+    assert "deductions[6].year_to_date_amount" in decision.review_fields
+
+
 def test_gross_net_mismatch_triggers_full_review():
     candidate = PayStubCandidate.from_json_file(
         ROOT / "fixtures" / "edge_cases" / "gross_net_mismatch_candidate.json"
@@ -72,6 +85,16 @@ def test_unknown_deduction_label_is_preserved(copy_clean_data):
     candidate = PayStubCandidate.from_dict(copy_clean_data)
 
     assert candidate.deductions[0].label.value == "Union Local 17"
+
+
+def test_nonzero_totals_with_no_line_items_trigger_full_review(copy_clean_data):
+    copy_clean_data["earnings"] = []
+    copy_clean_data["deductions"] = []
+
+    decision = route_candidate(PayStubCandidate.from_dict(copy_clean_data))
+
+    assert decision.action == RoutingAction.FULL_REVIEW
+    assert "DETERMINISTIC_VALIDATION_FAILED" in decision.reasons
 
 
 def test_employee_id_is_preserved(copy_clean_data):

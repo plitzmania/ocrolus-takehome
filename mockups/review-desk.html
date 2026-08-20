@@ -489,14 +489,14 @@
               </div>
               <div class="rd-paper-grid">
                 <div class="rd-paper-box"><strong>Employee</strong>Jane Doe<br>Employee ID: EMP-4821<br>Department: Operations</div>
-                <div class="rd-paper-box"><strong>Pay period</strong>08/01/2026 - 08/15/2026<br>Frequency: Bi-weekly</div>
+                <div class="rd-paper-box"><strong>Pay period</strong>08/01/2026 - 08/15/2026<br>Frequency: Semi-monthly</div>
               </div>
               <table class="rd-pay-table" aria-label="Earnings shown on source pay stub">
                 <thead><tr><th>Earnings</th><th>Rate</th><th>Hours</th><th>Current</th><th>YTD</th></tr></thead>
                 <tbody>
-                  <tr><td>Regular Pay</td><td>48.08</td><td>80.00</td><td>3,846.15</td><td>7,692.30</td></tr>
-                  <tr><td>Overtime</td><td>72.12</td><td>5.55</td><td>400.00</td><td id="sourceOvertimeYtd">400.00</td></tr>
-                  <tr class="rd-total"><td>Gross Pay</td><td></td><td></td><td>4,246.15</td><td>8,092.30</td></tr>
+                  <tr><td>Regular Pay</td><td>48.08</td><td>80.00</td><td>3,846.40</td><td>7,692.80</td></tr>
+                  <tr><td>Overtime</td><td>80.00</td><td>5.00</td><td>400.00</td><td id="sourceOvertimeYtd">380.00</td></tr>
+                  <tr class="rd-total"><td>Gross Pay</td><td></td><td></td><td>4,246.40</td><td>8,072.80</td></tr>
                 </tbody>
               </table>
               <table class="rd-pay-table" aria-label="Deductions shown on source pay stub">
@@ -509,7 +509,7 @@
                 </tbody>
               </table>
               <table class="rd-pay-table" aria-label="Net pay shown on source pay stub">
-                <tbody><tr class="rd-total"><td>Net Pay</td><td></td><td></td><td>3,290.38</td><td>6,180.76</td></tr></tbody>
+                <tbody><tr class="rd-total"><td>Net Pay</td><td></td><td></td><td>3,290.63</td><td>6,161.26</td></tr></tbody>
               </table>
               <div class="rd-highlight" id="fieldHighlight" aria-hidden="true"></div>
             </div>
@@ -553,12 +553,12 @@
           </div>
           <div class="rd-evidence">
             <span class="rd-evidence-label">Highlighted source text</span>
-            <div class="rd-evidence-text" id="evidenceText">Overtime · Current 400.00 · YTD 400.00</div>
+            <div class="rd-evidence-text" id="evidenceText">Overtime · Current 400.00 · YTD 380.00</div>
           </div>
           <div class="rd-values">
             <div class="rd-value-block">
               <div class="rd-value-label">Proposed value</div>
-              <div class="rd-value" id="proposedValue">$400.00</div>
+            <div class="rd-value" id="proposedValue">$380.00</div>
             </div>
             <div class="rd-value-block">
               <div class="rd-value-label">Model confidence</div>
@@ -567,7 +567,7 @@
           </div>
           <div>
             <label class="rd-control-label" for="correctedValue">Supported value from document</label>
-            <input class="rd-input" id="correctedValue" name="correctedValue" inputmode="decimal" value="400.00" autocomplete="off">
+            <input class="rd-input" id="correctedValue" name="correctedValue" inputmode="decimal" value="380.00" autocomplete="off">
           </div>
           <div>
             <label class="rd-control-label" for="correctionReason">Correction reason</label>
@@ -609,9 +609,9 @@
         path: '/earnings/items/1/year_to_date_amount',
         code: 'YTD_LESS_THAN_CURRENT',
         reason: 'The year-to-date value requires verification against the printed earnings row.',
-        evidence: 'Overtime · Current 400.00 · YTD 400.00',
-        proposed: '$400.00',
-        input: '400.00',
+        evidence: 'Overtime · Current 400.00 · YTD 380.00',
+        proposed: '$380.00',
+        input: '380.00',
         confidence: '72%',
         target: '#sourceOvertimeYtd'
       },

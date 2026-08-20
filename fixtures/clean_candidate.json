@@ -14,7 +14,7 @@
     "start": {"value": "2026-07-01", "confidence": 0.99},
     "end": {"value": "2026-07-15", "confidence": 0.99},
     "pay_date": {"value": "2026-07-18", "confidence": 0.99},
-    "frequency": {"value": "bi_weekly", "confidence": 0.99}
+    "frequency": {"value": "semi_monthly", "confidence": 0.99}
   },
   "compensation_rate": {
     "basis": {"value": "hourly", "confidence": 0.98},

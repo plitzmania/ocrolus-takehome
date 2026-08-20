@@ -40,6 +40,11 @@ def result_validator():
             "REJECT",
             "NEEDS_REVIEW",
         ),
+        (
+            "fixtures/supplied_paystub_candidate.json",
+            "FULL_REVIEW",
+            "NEEDS_REVIEW",
+        ),
     ],
 )
 def test_fixture_builds_schema_valid_result(
@@ -102,6 +107,15 @@ def test_optional_values_remain_explicit_nulls(result_validator):
 
     assert result["earnings"]["items"][1]["rate"] is None
     assert result["earnings"]["items"][1]["hours"] is None
+    result_validator.validate(result)
+
+
+def test_auto_completed_confidence_is_rounded(result_validator):
+    candidate = PayStubCandidate.from_json_file(ROOT / "fixtures/clean_candidate.json")
+
+    result = build_result(candidate)
+
+    assert result["confidence_score"] == round(result["confidence_score"], 6)
     result_validator.validate(result)
 
 

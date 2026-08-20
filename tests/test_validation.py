@@ -22,6 +22,26 @@ def test_suspicious_ytd_value_is_targeted_for_review():
     assert "deductions[0].year_to_date_amount" in issues[0].fields
 
 
+def test_supplied_paystub_flags_both_printed_ytd_anomalies():
+    candidate = PayStubCandidate.from_json_file(
+        ROOT / "fixtures" / "supplied_paystub_candidate.json"
+    )
+
+    issues = validate_candidate(candidate)
+    ytd_issues = [issue for issue in issues if issue.code == "YTD_LESS_THAN_CURRENT"]
+
+    assert len(ytd_issues) == 2
+    assert {
+        field
+        for issue in ytd_issues
+        for field in issue.fields
+        if field.endswith("year_to_date_amount")
+    } == {
+        "deductions[1].year_to_date_amount",
+        "deductions[6].year_to_date_amount",
+    }
+
+
 def test_gross_net_mismatch_is_an_error():
     candidate = PayStubCandidate.from_json_file(
         ROOT / "fixtures" / "edge_cases" / "gross_net_mismatch_candidate.json"
@@ -64,3 +84,27 @@ def test_ytd_line_items_must_match_ytd_totals(copy_clean_data):
 
     assert "EARNINGS_YTD_TOTAL_MISMATCH" in codes
     assert "GROSS_NET_YTD_MISMATCH" in codes
+
+
+def test_nonzero_totals_require_extracted_line_items(copy_clean_data):
+    copy_clean_data["earnings"] = []
+    copy_clean_data["deductions"] = []
+    candidate = PayStubCandidate.from_dict(copy_clean_data)
+
+    codes = {issue.code for issue in validate_candidate(candidate)}
+
+    assert "MISSING_EARNINGS_LINE_ITEMS" in codes
+    assert "MISSING_DEDUCTION_LINE_ITEMS" in codes
+
+
+def test_zero_deductions_allow_an_empty_deduction_collection(copy_clean_data):
+    copy_clean_data["deductions"] = []
+    copy_clean_data["totals"]["total_deductions"]["value"] = "0.00"
+    copy_clean_data["totals"]["total_deductions_ytd"]["value"] = "0.00"
+    copy_clean_data["totals"]["net_pay"]["value"] = "2500.00"
+    copy_clean_data["totals"]["net_pay_ytd"]["value"] = "19000.00"
+    candidate = PayStubCandidate.from_dict(copy_clean_data)
+
+    codes = {issue.code for issue in validate_candidate(candidate)}
+
+    assert "MISSING_DEDUCTION_LINE_ITEMS" not in codes

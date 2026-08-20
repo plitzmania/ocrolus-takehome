@@ -22,14 +22,8 @@ review task passed to the frontend.
 
 ## Open the reviewer UI
 
-The hosted prototype is available at
-[ocrolus-review-desk.benteplitzky15.chatgpt.site](https://ocrolus-review-desk.benteplitzky15.chatgpt.site).
-It is privately shared, so a new recipient must be granted access first.
-The **Backend demo** tab randomly replays scenarios A–D from the same
-contract-checked Python payload; the **Reviewer workflow** tab demonstrates the
-human exception path.
-
-To run the same UI locally:
+Run the UI locally so the review path does not depend on a separate access
+grant:
 
 ```bash
 cd review-desk-site
@@ -54,6 +48,13 @@ uv run --extra test --no-editable ocrolus-review-task \
   --state CLAIMED --reviewer-id demo-reviewer
 ```
 
+Run the manually transcribed assignment pay stub:
+
+```bash
+uv run --extra test --no-editable ocrolus-takehome-demo \
+  fixtures/supplied_paystub_candidate.json --summary
+```
+
 ## Verify the handoff
 
 ```bash
@@ -67,5 +68,5 @@ uv run --extra test --no-editable pytest
 The prototype does not perform OCR, accept document uploads, persist reviewer
 actions, authenticate reviewers, or run a production queue. The frontend's
 save, revalidation, and escalation actions are local simulations. Production
-architecture and trade-offs are documented in `DESIGN.md`,
-`SYSTEM_OVERVIEW.md`, and `WRITEUP.md`.
+architecture and rationale are linked from the public submission directory in
+the root README.

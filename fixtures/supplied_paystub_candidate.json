@@ -1,0 +1,177 @@
+{
+  "document_id": "supplied-paystub-manual-transcription-001",
+  "source": "manual_transcription_of_supplied_paystub",
+  "document_readability": 0.99,
+  "currency": {"value": null, "confidence": 0.0},
+  "employee": {
+    "name": {
+      "value": "JOHN R SAMPLE",
+      "confidence": 0.99,
+      "evidence": {"page": 1, "text": "JOHN R SAMPLE"}
+    },
+    "id": {
+      "value": "12345",
+      "confidence": 0.99,
+      "evidence": {"page": 1, "text": "12345"}
+    }
+  },
+  "employer": {
+    "name": {
+      "value": "ANY NAME OF SAMPLE COMPANY",
+      "confidence": 0.99,
+      "evidence": {"page": 1, "text": "ANY NAME OF SAMPLE COMPANY"}
+    }
+  },
+  "pay_period": {
+    "start": {
+      "value": "2023-04-28",
+      "confidence": 0.99,
+      "evidence": {"page": 1, "text": "Period: 04/28/23 - 05/10/23"}
+    },
+    "end": {
+      "value": "2023-05-10",
+      "confidence": 0.99,
+      "evidence": {"page": 1, "text": "Period: 04/28/23 - 05/10/23"}
+    },
+    "pay_date": {
+      "value": "2023-05-14",
+      "confidence": 0.99,
+      "evidence": {"page": 1, "text": "Check Date: 05/14/23"}
+    },
+    "frequency": {"value": null, "confidence": 0.0}
+  },
+  "compensation_rate": {
+    "basis": {"value": "hourly", "confidence": 0.99},
+    "amount": {
+      "value": "40.88",
+      "confidence": 0.99,
+      "evidence": {"page": 1, "text": "Rate 40.8800"}
+    },
+    "unit": {"value": "hour", "confidence": 0.99}
+  },
+  "earnings": [
+    {
+      "label": {"value": "CELLULAR PHONE REIMB", "confidence": 0.99},
+      "type": {"value": "reimbursement", "confidence": 0.99},
+      "current_amount": {
+        "value": "100.00",
+        "confidence": 0.99,
+        "evidence": {"page": 1, "text": "CELLULAR PHONE REIMB ... 100.00"}
+      },
+      "year_to_date_amount": {"value": null, "confidence": 0.0}
+    },
+    {
+      "label": {"value": "PERSONAL DAY", "confidence": 0.99},
+      "type": {"value": "other", "confidence": 0.99},
+      "current_amount": {"value": "694.96", "confidence": 0.99},
+      "year_to_date_amount": {"value": null, "confidence": 0.0},
+      "rate": {"value": "40.88", "confidence": 0.99},
+      "hours": {"value": "17.00", "confidence": 0.99}
+    },
+    {
+      "label": {"value": "REGULAR PAY-S1", "confidence": 0.99},
+      "type": {"value": "regular", "confidence": 0.99},
+      "current_amount": {"value": "735.84", "confidence": 0.99},
+      "year_to_date_amount": {"value": null, "confidence": 0.0},
+      "rate": {"value": "40.88", "confidence": 0.99},
+      "hours": {"value": "18.00", "confidence": 0.99}
+    },
+    {
+      "label": {"value": "REGULAR PAY-S1", "confidence": 0.99},
+      "type": {"value": "regular", "confidence": 0.99},
+      "current_amount": {"value": "613.20", "confidence": 0.99},
+      "year_to_date_amount": {"value": null, "confidence": 0.0},
+      "rate": {"value": "40.88", "confidence": 0.99},
+      "hours": {"value": "15.00", "confidence": 0.99}
+    }
+  ],
+  "deductions": [
+    {
+      "label": {"value": "CAFE-2", "confidence": 0.99},
+      "type": {"value": "other", "confidence": 0.99},
+      "tax_treatment": {"value": "unknown", "confidence": 0.99},
+      "current_amount": {"value": "550.60", "confidence": 0.99},
+      "year_to_date_amount": {"value": "1050.00", "confidence": 0.99}
+    },
+    {
+      "label": {"value": "CAFE-D", "confidence": 0.99},
+      "type": {"value": "other", "confidence": 0.99},
+      "tax_treatment": {"value": "unknown", "confidence": 0.99},
+      "current_amount": {
+        "value": "100.50",
+        "confidence": 0.99,
+        "evidence": {"page": 1, "text": "CAFE-D 100.50 74.20"}
+      },
+      "year_to_date_amount": {
+        "value": "74.20",
+        "confidence": 0.99,
+        "evidence": {"page": 1, "text": "CAFE-D 100.50 74.20"}
+      }
+    },
+    {
+      "label": {"value": "TSA-R", "confidence": 0.99},
+      "type": {"value": "retirement", "confidence": 0.99},
+      "tax_treatment": {"value": "unknown", "confidence": 0.99},
+      "current_amount": {"value": "250.14", "confidence": 0.99},
+      "year_to_date_amount": {"value": "1976.34", "confidence": 0.99}
+    },
+    {
+      "label": {"value": "FEDERAL INCOME TAX", "confidence": 0.99},
+      "type": {"value": "federal_tax", "confidence": 0.99},
+      "tax_treatment": {"value": "unknown", "confidence": 0.99},
+      "current_amount": {"value": "155.00", "confidence": 0.99},
+      "year_to_date_amount": {"value": "3729.94", "confidence": 0.99}
+    },
+    {
+      "label": {"value": "FICA OASDI", "confidence": 0.99},
+      "type": {"value": "social_security", "confidence": 0.99},
+      "tax_treatment": {"value": "unknown", "confidence": 0.99},
+      "current_amount": {"value": "210.79", "confidence": 0.99},
+      "year_to_date_amount": {"value": "1680.77", "confidence": 0.99}
+    },
+    {
+      "label": {"value": "FICA MEDICARE", "confidence": 0.99},
+      "type": {"value": "medicare", "confidence": 0.99},
+      "tax_treatment": {"value": "unknown", "confidence": 0.99},
+      "current_amount": {"value": "49.30", "confidence": 0.99},
+      "year_to_date_amount": {"value": "393.08", "confidence": 0.99}
+    },
+    {
+      "label": {"value": "CAFE-CI", "confidence": 0.99},
+      "type": {"value": "other", "confidence": 0.99},
+      "tax_treatment": {"value": "unknown", "confidence": 0.99},
+      "current_amount": {
+        "value": "195.00",
+        "confidence": 0.99,
+        "evidence": {"page": 1, "text": "CAFE-CI 195.00 67.76"}
+      },
+      "year_to_date_amount": {
+        "value": "67.76",
+        "confidence": 0.99,
+        "evidence": {"page": 1, "text": "CAFE-CI 195.00 67.76"}
+      }
+    },
+    {
+      "label": {"value": "GARNISH", "confidence": 0.99},
+      "type": {"value": "garnishment", "confidence": 0.99},
+      "tax_treatment": {"value": "unknown", "confidence": 0.99},
+      "current_amount": {"value": "103.85", "confidence": 0.99},
+      "year_to_date_amount": {"value": "2446.19", "confidence": 0.99}
+    },
+    {
+      "label": {"value": "PT FITNESS", "confidence": 0.99},
+      "type": {"value": "other", "confidence": 0.99},
+      "tax_treatment": {"value": "unknown", "confidence": 0.99},
+      "current_amount": {"value": "17.36", "confidence": 0.99},
+      "year_to_date_amount": {"value": "52.50", "confidence": 0.99}
+    }
+  ],
+  "totals": {
+    "gross_pay": {"value": "2144.00", "confidence": 0.99},
+    "gross_pay_ytd": {"value": "33552.08", "confidence": 0.99},
+    "total_deductions": {"value": "1632.54", "confidence": 0.99},
+    "total_deductions_ytd": {"value": "11470.78", "confidence": 0.99},
+    "net_pay": {"value": "511.46", "confidence": 0.99},
+    "net_pay_ytd": {"value": "22081.30", "confidence": 0.99}
+  }
+}

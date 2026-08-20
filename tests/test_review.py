@@ -65,6 +65,16 @@ def test_review_task_uses_public_json_pointers():
     )
 
 
+def test_supplied_paystub_review_task_labels_manual_observations():
+    candidate = PayStubCandidate.from_json_file(
+        ROOT / "fixtures" / "supplied_paystub_candidate.json"
+    )
+
+    task = build_review_task(candidate)
+
+    assert {item["source"] for item in task["field_observations"]} == {"manual"}
+
+
 @pytest.mark.parametrize(
     "fixture",
     [

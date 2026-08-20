@@ -158,8 +158,38 @@ def validate_candidate(candidate: PayStubCandidate) -> List[ValidationIssue]:
     issues.extend(_line_item_issues(candidate.earnings, "earnings"))
     issues.extend(_line_item_issues(candidate.deductions, "deductions"))
 
-    earnings_sum = _sum_current(candidate.earnings)
     gross = candidate.totals.gross_pay.value
+    if not candidate.earnings and gross is not None and gross != 0:
+        issues.append(
+            ValidationIssue(
+                code="MISSING_EARNINGS_LINE_ITEMS",
+                severity=Severity.ERROR,
+                message=(
+                    "Gross pay is nonzero but no earnings line items were extracted."
+                ),
+                fields=("earnings", "totals.gross_pay"),
+            )
+        )
+
+    total_deductions = candidate.totals.total_deductions.value
+    if (
+        not candidate.deductions
+        and total_deductions is not None
+        and total_deductions != 0
+    ):
+        issues.append(
+            ValidationIssue(
+                code="MISSING_DEDUCTION_LINE_ITEMS",
+                severity=Severity.ERROR,
+                message=(
+                    "Total deductions are nonzero but no deduction line items "
+                    "were extracted."
+                ),
+                fields=("deductions", "totals.total_deductions"),
+            )
+        )
+
+    earnings_sum = _sum_current(candidate.earnings)
     if (
         earnings_sum is not None
         and gross is not None
@@ -191,7 +221,6 @@ def validate_candidate(candidate: PayStubCandidate) -> List[ValidationIssue]:
         )
 
     deductions_sum = _sum_current(candidate.deductions)
-    total_deductions = candidate.totals.total_deductions.value
     if (
         deductions_sum is not None
         and total_deductions is not None
